@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文化-财经</title>
+    <link rel="stylesheet" href="../../style1.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="../../subscript.js" defer></script>
+    <script>
+        // 在浏览器环境中提供fs模块的polyfill
+        window.fs = {
+            existsSync: () => false,
+            mkdirSync: () => {},
+            writeFileSync: () => {}
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1>文化-财经</h1>
+        <div class="toolbar">
+        
+        <!-- 分类选择对话框 -->
+        <div id="category-dialog" class="dialog">
+            <div class="dialog-content">
+                <h3>选择分类</h3>
+                <div class="category-select">
+                    <label>主分类：
+                        <select id="main-category">
+                            <option value="未分类">未分类</option>
+                            <option value="物理">物理</option>
+                            <option value="哲学">哲学</option>
+                        </select>
+                    </label>
+                    <label>子分类：
+                        <select id="sub-category">
+                            <option value="未分类">未分类</option>
+                            <option value="凝聚态物理">凝聚态物理</option>
+                            <option value="古典哲学">古典哲学</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="dialog-buttons">
+                    <button id="confirm-save">确认保存</button>
+                    <button id="cancel-save">取消</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+    <div class="container">
+<nav id="sidebar">
+    <div class="category">
+        <div class="category-title">哲学</div>
+        <div class="subcategory">古典哲学</div>
+        <div class="subcategory">现代哲学</div>
+    </div>
+    <div class="category">
+        <div class="category-title">物理</div>
+        <div class="subcategory">量子力学</div>
+        <div class="subcategory">量子场论</div>
+        <div class="subcategory">凝聚态物理</div>
+        <div class="subcategory">共形场论</div>
+        <div class="subcategory">拓扑场论</div>
+        <div class="subcategory">拓扑弦论</div>
+    </div>
+    <div class="category">
+        <div class="category-title">数学</div>
+        <div class="subcategory">李代数</div>
+        <div class="subcategory">仿射代数</div>
+        <div class="subcategory">对称函数</div>
+        <div class="subcategory">微分几何</div>
+        <div class="subcategory">代数拓扑</div>
+    </div>
+    <div class="category">
+        <div class="category-title">文化</div>
+        <div class="subcategory">思想</div>
+        <div class="subcategory">社会</div>
+        <div class="subcategory">财经</div>
+        <div class="subcategory">世界局势</div>
+    </div>
+</nav>
+        <div class="main-content">
+            <div class="note-list-container">
+                <div class="note-list-header">
+                    <h2>笔记列表</h2>
+                    <button onclick="window.location.href='../../../index.html'" class="home-btn">返回主页</button>
+                    <div class="sort-controls">
+                        <label>排序方式：
+                            <select id="sort-by">
+                                <option value="date-desc">最新优先</option>
+                                <option value="date-asc">最早优先</option>
+                                <option value="title-asc">标题升序</option>
+                                <option value="title-desc">标题降序</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+            <div id="note-list">
+                    <!-- 笔记条目将动态加载 -->
+                </div>
+            </div>
+            <div id="html-output"></div>
+        </div>
+        
+            
+</body>
+</html>
