@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目配置</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>项目配置</h1>
+    
+    <div class="form-group">
+      <h2>项目标题</h2>
+      <input type="text" id="title" placeholder="请输入项目标题" required>
+    </div>
+
+    <div class="category-management">
+      <h2>分类管理</h2>
+      <button type="button" class="btn" onclick="addCategory()">添加分类</button>
+      
+      <div id="categories">
+        <!-- 动态添加的分类项将显示在这里 -->
+      </div>
+    </div>
+
+    <button class="btn generate-btn" onclick="generateProject()">生成项目</button>
+  </div>
+
+  <script>
+    // 页面加载时初始化默认分类
+    document.addEventListener('DOMContentLoaded', function() {
+      for (let i = 1; i <= 4; i++) {
+        const category = addCategory();
+        category.querySelector('input').value = `默认分类${i}`;
+        
+        for (let j = 1; j <= 4; j++) {
+          addSubCategory(category);
+          const subInputs = category.querySelectorAll('.subcategory-item input');
+          subInputs[subInputs.length - 1].value = `默认子分类${j}`;
+        }
+      }
+    });
+
+    function addCategory() {
+      const container = document.createElement('div');
+      container.className = 'category-item';
+      
+      const categoryHeader = document.createElement('div');
+      categoryHeader.className = 'category-header';
+      
+      const categoryInput = document.createElement('input');
+      categoryInput.type = 'text';
+      categoryInput.placeholder = '分类名称';
+      categoryInput.className = 'form-control';
+      
+      const deleteCategoryBtn = document.createElement('button');
+      deleteCategoryBtn.className = 'btn delete-btn';
+      deleteCategoryBtn.textContent = '删除分类';
+      deleteCategoryBtn.onclick = () => container.remove();
+      
+      const addSubBtn = document.createElement('button');
+      addSubBtn.className = 'btn add-subcategory-btn';
+      addSubBtn.textContent = '添加子分类';
+      addSubBtn.onclick = () => addSubCategory(container);
+      
+      categoryHeader.appendChild(categoryInput);
+      categoryHeader.appendChild(deleteCategoryBtn);
+      
+      const subcategoryList = document.createElement('div');
+      subcategoryList.className = 'subcategory-list';
+      
+      container.appendChild(categoryHeader);
+      container.appendChild(addSubBtn);
+      container.appendChild(subcategoryList);
+      
+      document.getElementById('categories').appendChild(container);
+    }
+
+    function addSubCategory(container) {
+      const subcategoryList = container.querySelector('.subcategory-list');
+      
+      const subcategoryItem = document.createElement('div');
+      subcategoryItem.className = 'subcategory-item';
+      
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = '子分类名称';
+      input.className = 'form-control';
+      
+      const deleteSubBtn = document.createElement('button');
+      deleteSubBtn.className = 'btn delete-btn';
+      deleteSubBtn.textContent = '删除';
+      deleteSubBtn.onclick = () => subcategoryItem.remove();
+      
+      subcategoryItem.appendChild(input);
+      subcategoryItem.appendChild(deleteSubBtn);
+      subcategoryList.appendChild(subcategoryItem);
+    }
+
+    function generateProject() {
+      const title = document.getElementById('title').value;
+      const categories = [];
+      
+      document.querySelectorAll('.category-item').forEach(cat => {
+        const category = {
+          name: cat.querySelector('input').value,
+          subcategories: []
+        };
+        
+        cat.querySelectorAll('.subcategory-item input').forEach(input => {
+          category.subcategories.push({ name: input.value });
+        });
+        
+        categories.push(category);
+      });
+
+      fetch('/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          categories
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('项目生成成功！');
+        } else {
+          alert('项目生成失败：' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('请求失败');
+      });
+    }
+  </script>
+</body>
+</html>

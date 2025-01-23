@@ -1,0 +1,27 @@
+{
+  "title": "物理课程笔记",
+  "categories": [
+    {
+      "name": "物理",
+      "subcategories": [
+        {
+          "name": "量子力学"
+        },
+        {
+          "name": "理论力学"
+        }
+      ]
+    },
+    {
+      "name": "数学",
+      "subcategories": [
+        {
+          "name": "代数"
+        },
+        {
+          "name": "几何"
+        }
+      ]
+    }
+  ]
+}
