@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的科学笔记</title>
+    <title id="dynamic-title"></title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -23,7 +23,7 @@
 </head>
 <body>
     <header>
-        <h1>我的科学笔记</h1>
+        <h1 id="main-title"></h1>
         <div class="toolbar">
         <button id="save-publish-btn">保存并发布</button>
         
@@ -35,15 +35,11 @@
                     <label>主分类：
                         <select id="main-category">
                             <option value="未分类">未分类</option>
-                            <option value="物理">物理</option>
-                            <option value="哲学">哲学</option>
                         </select>
                     </label>
                     <label>子分类：
                         <select id="sub-category">
                             <option value="未分类">未分类</option>
-                            <option value="凝聚态物理">凝聚态物理</option>
-                            <option value="古典哲学">古典哲学</option>
                         </select>
                     </label>
                 </div>
@@ -56,37 +52,44 @@
         </div>
     </header>
     <div class="container">
-<nav id="sidebar">
-    <div class="category">
-        <div class="category-title">哲学</div>
-        <div class="subcategory"><a href="notes/哲学/古典哲学/contents.html">古典哲学</a></div>
-        <div class="subcategory"><a href="notes/哲学/现代哲学/contents.html">现代哲学</a></div>
-    </div>
-    <div class="category">
-        <div class="category-title">物理</div>
-        <div class="subcategory"><a href="notes/物理/量子力学/contents.html">量子力学</a></div>
-        <div class="subcategory"><a href="notes/物理/量子场论/contents.html">量子场论</a></div>
-        <div class="subcategory"><a href="notes/物理/凝聚态物理/contents.html">凝聚态物理</a></div>
-        <div class="subcategory"><a href="notes/物理/共形场论/contents.html">共形场论</a></div>
-        <div class="subcategory"><a href="notes/物理/拓扑场论/contents.html">拓扑场论</a></div>
-        <div class="subcategory"><a href="notes/物理/拓扑弦论/contents.html">拓扑弦论</a></div>
-    </div>
-    <div class="category">
-        <div class="category-title">数学</div>
-        <div class="subcategory"><a href="notes/数学/李代数/contents.html">李代数</a></div>
-        <div class="subcategory"><a href="notes/数学/仿射代数/contents.html">仿射代数</a></div>
-        <div class="subcategory"><a href="notes/数学/对称函数/contents.html">对称函数</a></div>
-        <div class="subcategory"><a href="notes/数学/微分几何/contents.html">微分几何</a></div>
-        <div class="subcategory"><a href="notes/数学/代数拓扑/contents.html">代数拓扑</a></div>
-    </div>
-    <div class="category">
-        <div class="category-title">文化</div>
-        <div class="subcategory"><a href="notes/文化/思想/contents.html">思想</a></div>
-        <div class="subcategory"><a href="notes/文化/社会/contents.html">社会</a></div>
-        <div class="subcategory"><a href="notes/文化/财经/contents.html">财经</a></div>
-        <div class="subcategory"><a href="notes/文化/世界局势/contents.html">世界局势</a></div>
-    </div>
-</nav>
+<nav id="sidebar"></nav>
+<script>
+    // 动态加载导航栏
+    fetch('site_data.json')
+        .then(response => response.json())
+        .then(data => {
+            // 设置标题
+            document.getElementById('dynamic-title').textContent = data.title;
+            document.getElementById('main-title').textContent = data.title;
+
+            // 生成导航栏
+            const sidebar = document.getElementById('sidebar');
+            data.categories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'category-title';
+                categoryTitle.textContent = category.name;
+                categoryDiv.appendChild(categoryTitle);
+
+                category.subcategories.forEach(subcategory => {
+                    const subcategoryDiv = document.createElement('div');
+                    subcategoryDiv.className = 'subcategory';
+                    
+                    const link = document.createElement('a');
+                    link.href = `notes/${category.name}/${subcategory.name}/contents.html`;
+                    link.textContent = subcategory.name;
+                    subcategoryDiv.appendChild(link);
+                    
+                    categoryDiv.appendChild(subcategoryDiv);
+                });
+
+                sidebar.appendChild(categoryDiv);
+            });
+        })
+        .catch(error => console.error('Error loading site data:', error));
+</script>
         <div class="main-content">
             <div id="markdown-input" class="markdown-input" contenteditable="true" spellcheck="false"></div>
             <div id="html-output"></div>

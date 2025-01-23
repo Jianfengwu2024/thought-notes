@@ -120,6 +120,7 @@ const db = new sqlite3.Database(path.join(__dirname, 'notes.db'), (err) => {
 // 中间件
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+app.use('/site_data.json', express.static(path.join(__dirname, 'site_data.json')));
 app.use('/notes', express.static(path.join(__dirname, 'notes'), {
   setHeaders: (res, path) => {
     if (path.endsWith('.js')) {
@@ -470,6 +471,46 @@ app.get('/api/search', (req, res) => {
         });
     });
 });
+
+// 读取site_data.json
+let siteData = {};
+try {
+    const data = fs.readFileSync(path.join(__dirname, 'site_data.json'), 'utf8');
+    siteData = JSON.parse(data);
+} catch (err) {
+    console.error('读取site_data.json失败:', err);
+}
+
+// 修改子分类页面路由
+app.get('/notes/:category/:subcategory/contents.html', (req, res) => {
+    const { category, subcategory } = req.params;
+    const filePath = path.join(__dirname, 'notes', category, subcategory, 'contents.html');
+    
+    // 读取模板文件
+    const template = fs.readFileSync(filePath, 'utf8');
+    
+    // 注入数据
+    const rendered = template
+        .replace('id="dynamic-title"', `id="dynamic-title">${category} - ${subcategory}`)
+        .replace('id="main-title"', `id="main-title">${category} - ${subcategory}`)
+        .replace('id="sidebar"', `id="sidebar">${generateSidebar(siteData)}`);
+    
+    res.send(rendered);
+});
+
+// 生成侧边栏HTML
+function generateSidebar(data) {
+    return data.categories.map(cat => `
+        <div class="category">
+            <div class="category-title">${cat.name}</div>
+            ${cat.subcategories.map(subcat => `
+                <div class="subcategory">
+                    <a href="../../notes/${cat.name}/${subcat.name}/contents.html">${subcat.name}</a>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
 
 // 启动HTTP服务器
 const server = app.listen(port, () => {

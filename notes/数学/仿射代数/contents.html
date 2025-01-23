@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学-仿射代数</title>
+    <title id="dynamic-title"></title>
     <link rel="stylesheet" href="../../style1.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -16,11 +16,96 @@
             mkdirSync: () => {},
             writeFileSync: () => {}
         };
+
+        // WebSocket连接
+        let ws = new WebSocket(`ws://${window.location.host}`);
+        
+        // 处理笔记列表更新
+        ws.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'noteListUpdate') {
+                loadNotes();
+            }
+        });
+
+        // 加载笔记列表
+        async function loadNotes() {
+            const pathParts = window.location.pathname.split('/');
+            const category = pathParts[2];
+            const subcategory = pathParts[3];
+            
+            try {
+                const response = await fetch(`/api/notes?category=${category}&subcategory=${subcategory}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderNoteList(result.data);
+                }
+            } catch (error) {
+                console.error('加载笔记列表失败:', error);
+            }
+        }
+
+        // 渲染笔记列表
+        function renderNoteList(notes) {
+            const noteList = document.getElementById('note-list');
+            noteList.innerHTML = notes.map(note => `
+                <div class="note-item" data-id="${note.id}">
+                    <div class="note-title">${note.title}</div>
+                    <div class="note-meta">最后更新：${note.modifiedTime}</div>
+                    <div class="note-actions">
+                        <button class="view-btn" onclick="viewNote('${note.filename}')">查看</button>
+                        <button class="edit-btn" disabled>修改</button>
+                        <button class="delete-btn" onclick="deleteNote('${note.filename}')">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 查看笔记
+        function viewNote(filename) {
+            const pathParts = window.location.pathname.split('/');
+            const category = pathParts[2];
+            const subcategory = pathParts[3];
+            
+            fetch(`/notes/${category}/${subcategory}/${filename}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('html-output').innerHTML = html;
+                });
+        }
+
+        // 删除笔记
+        async function deleteNote(filename) {
+            if (!confirm('确定要删除该笔记吗？')) return;
+            
+            try {
+                const response = await fetch('/api/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ filename })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    loadNotes(); // 重新加载笔记列表
+                }
+            } catch (error) {
+                console.error('删除笔记失败:', error);
+            }
+        }
+
+        // 初始化加载笔记列表
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNotes();
+        });
     </script>
 </head>
 <body>
     <header>
-        <h1>数学-仿射代数</h1>
+        <h1 id="main-title"></h1>
         <div class="toolbar">
         
         <!-- 分类选择对话框 -->
@@ -52,37 +137,56 @@
         </div>
     </header>
     <div class="container">
-<nav id="sidebar">
-    <div class="category">
-        <div class="category-title">哲学</div>
-        <div class="subcategory">古典哲学</div>
-        <div class="subcategory">现代哲学</div>
-    </div>
-    <div class="category">
-        <div class="category-title">物理</div>
-        <div class="subcategory">量子力学</div>
-        <div class="subcategory">量子场论</div>
-        <div class="subcategory">凝聚态物理</div>
-        <div class="subcategory">共形场论</div>
-        <div class="subcategory">拓扑场论</div>
-        <div class="subcategory">拓扑弦论</div>
-    </div>
-    <div class="category">
-        <div class="category-title">数学</div>
-        <div class="subcategory">李代数</div>
-        <div class="subcategory">仿射代数</div>
-        <div class="subcategory">对称函数</div>
-        <div class="subcategory">微分几何</div>
-        <div class="subcategory">代数拓扑</div>
-    </div>
-    <div class="category">
-        <div class="category-title">文化</div>
-        <div class="subcategory">思想</div>
-        <div class="subcategory">社会</div>
-        <div class="subcategory">财经</div>
-        <div class="subcategory">世界局势</div>
-    </div>
-</nav>
+<nav id="sidebar"></nav>
+<script>
+    // 动态加载导航栏和标题
+    fetch('../../../site_data.json')
+        .then(response => response.text())
+        .then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('JSON解析失败:', error);
+                return null;
+            }
+        })
+        .then(data => {
+            // 设置标题
+            const pathParts = window.location.pathname.split('/');
+            const category = pathParts[2];
+            const subcategory = pathParts[3];
+            
+            document.getElementById('dynamic-title').textContent = decodeURIComponent(`${category} - ${subcategory}`);
+            document.getElementById('main-title').textContent = decodeURIComponent(`${category} - ${subcategory}`);
+
+            // 生成导航栏
+            const sidebar = document.getElementById('sidebar');
+            data.categories.forEach(cat => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'category-title';
+                categoryTitle.textContent = cat.name;
+                categoryDiv.appendChild(categoryTitle);
+
+                cat.subcategories.forEach(subcat => {
+                    const subcategoryDiv = document.createElement('div');
+                    subcategoryDiv.className = 'subcategory';
+                    
+                    const link = document.createElement('a');
+                    link.href = `../../${cat.name}/${subcat.name}/contents.html`;
+                    link.textContent = subcat.name;
+                    subcategoryDiv.appendChild(link);
+                    
+                    categoryDiv.appendChild(subcategoryDiv);
+                });
+
+                sidebar.appendChild(categoryDiv);
+            });
+        })
+        .catch(error => console.error('Error loading site data:', error));
+</script>
         <div class="main-content">
             <div class="note-list-container">
                 <div class="note-list-header">
