@@ -371,6 +371,13 @@ header h1 {
     color: blue;
 }
 
+mark {
+    background-color: #fff3d4;
+    padding: 0.1em 0.3em;
+    border-radius: 0.2em;
+    box-shadow: 0 0 0.2em rgba(255, 204, 0, 0.3);
+}
+
 pre {
     border: 1px solid #ddd;
     padding: 10px;

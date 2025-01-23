@@ -40,8 +40,6 @@ body {
     font-weight: 500;
 }
 
-
-
 /* Improve code block readability */
 pre, code {
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
@@ -236,17 +234,60 @@ header h1 {
 /* Math expression styling */
 .markdown-input [data-md-type="math-inline"],
 #html-output [data-md-type="math-inline"] {
-    color: blue;
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'KaTeX_Math', 'Times New Roman', serif;
 }
 
 .markdown-input [data-md-type="math-block"], 
 #html-output [data-md-type="math-block"] {
-    color: blue;
+    color: #1565c0;
+    background-color: #e3f2fd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'KaTeX_Main', 'Times New Roman', serif;
 }
 
 .markdown-input [data-md-type="math-tag"],
 #html-output [data-md-type="math-tag"] {
-    color: red;
+    color: #2e7d32;
+    font-weight: bold;
+    background-color: #e8f5e9;
+    padding: 1px 3px;
+    border-radius: 2px;
+}
+
+.katex {
+    font-size: 1.1em;
+}
+
+.katex-display {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.katex .mord {
+    color: #1565c0;
+}
+
+.katex .mrel {
+    color: #d32f2f;
+}
+
+.katex .mopen, .katex .mclose {
+    color: #2e7d32;
+}
+
+.katex .mfrac {
+    background-color: #fff3e0;
+    padding: 2px;
+    border-radius: 2px;
 }
 
 .markdown-input:focus {
@@ -486,4 +527,12 @@ code {
 #cancel-save {
     background-color: #f44336;
     color: white;
+}
+
+/* 高亮文本样式 */
+mark {
+    background-color: #ffeb3b;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25em;
+    color: #000;
 }

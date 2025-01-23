@@ -135,15 +135,38 @@ document.addEventListener('DOMContentLoaded', () => {
         item.dataset.id = `category-${index}`;
     });
     
-    // 实时Markdown解析和自动保存
-    markdownInput.addEventListener('input', () => {
-        const markdownText = markdownInput.innerText;
-        // 先提取公式
-        const { content, mathBlocks } = extractMath(markdownText);
-        // 先渲染公式
-        const renderedContent = renderMath(content, mathBlocks);
-        // 再解析Markdown
-        let html = marked.parse(renderedContent);
+// 配置marked解析器
+marked.use({
+  extensions: [{
+    name: 'highlight',
+    level: 'inline',
+    start(src) { return src.match(/==/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^==([^=]+)==/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'highlight',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      return `<mark>${token.text}</mark>`;
+    }
+  }]
+});
+
+// 实时Markdown解析和自动保存
+markdownInput.addEventListener('input', () => {
+    const markdownText = markdownInput.innerText;
+    // 先提取公式
+    const { content, mathBlocks } = extractMath(markdownText);
+    // 先渲染公式
+    const renderedContent = renderMath(content, mathBlocks);
+    // 再解析Markdown
+    let html = marked.parse(renderedContent);
         htmlOutput.innerHTML = html;
         
         // 自动保存Markdown内容
