@@ -52,25 +52,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const savePublishBtn = document.getElementById('save-publish-btn');
     const sidebar = document.getElementById('sidebar');
 
-    // 检查是否是从编辑模式跳转过来
+    // 检查URL参数
     const urlParams = new URLSearchParams(window.location.search);
-    const editContent = urlParams.get('edit');
-    const noteId = urlParams.get('id');
-    
-    // 如果是编辑模式，从localStorage获取内容
-    if (editContent && noteId) {
-        const decodedContent = decodeURIComponent(editContent);
-            markdownInput.innerText = decodedContent;
-            markdownInput.dispatchEvent(new Event('input'));
-        
-        // 保存编辑状态
-        localStorage.setItem('editMode', 'true');
-        localStorage.setItem('editNoteId', noteId);
-        localStorage.setItem('editContent', decodedContent);
+    const isEditMode = urlParams.get('editMode') === 'true';
 
-        // 修改保存按钮为保存修改
-        savePublishBtn.textContent = '保存修改';
-        savePublishBtn.style.backgroundColor = '#4CAF50';
+    // 如果是编辑模式，从localStorage获取内容
+    if (isEditMode) {
+        const noteId = localStorage.getItem('editNoteId');
+        const editContent = localStorage.getItem('editContent');
+        
+        if (noteId && editContent) {
+            markdownInput.innerText = editContent;
+            markdownInput.dispatchEvent(new Event('input'));
+
+            // 修改保存按钮为保存修改
+            savePublishBtn.textContent = '保存修改';
+            savePublishBtn.style.backgroundColor = '#4CAF50';
+        }
     } else {
         // 清除编辑状态
         localStorage.removeItem('editMode');
@@ -502,11 +500,11 @@ function initMediaControls() {
 }
 
 // 初始化示例内容
-    const initialContent = `# 欢迎使用我的科学笔记
+const initialContent = `# 欢迎使用我的科学笔记
 
 ## 这是一个Markdown编辑器
 
-- 支持**加粗**、*斜体*等格式
+- 支持**加粗**、*斜体*、==高亮==等格式
 - 支持代码块：
 \`\`\`javascript
 function hello() {
@@ -557,6 +555,4 @@ function hello() {
     // 渲染公式
     html = renderMath(html, mathBlocks);
     htmlOutput.innerHTML = html;
-    // 初始化媒体控制
-    initMediaControls();
 });
