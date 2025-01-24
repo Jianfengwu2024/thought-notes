@@ -70,7 +70,6 @@ app.post('/generate', (req, res) => {
       'update_all_contents.js',
       'index.html',
       'readme.md',
-      'render.js',
       'package.json',
       'package-lock.json'
     ];
