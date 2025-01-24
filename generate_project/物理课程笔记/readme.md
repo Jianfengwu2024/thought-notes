@@ -1,9 +1,70 @@
-# 科学笔记项目
+# 物理课程笔记管理系统
 
 ## 项目概述
-这是一个用于管理和展示科学笔记的Web应用程序，主要包含数学、物理、哲学等学科的学习笔记。项目采用模块化设计，具有良好的可扩展性。
+这是一个专门用于管理物理课程笔记的本地Web应用程序，采用模块化设计，支持多级分类管理。系统包含完整的笔记展示、分类管理和本地开发环境。
 
-## 文件系统结构
+## 系统架构
+
+```plantuml
+@startuml
+package "前端" {
+    [index.html] --> [style.css]
+    [index.html] --> [script.js]
+    [script.js] --> [site_data.json]
+    [script.js] --> [notes/subscript.js]
+}
+
+package "笔记模块" {
+    [notes/contents_template.html] --> [notes/style1.css]
+    [notes/contents_template.html] --> [notes/subscript.js]
+}
+
+package "后端" {
+    [server.js] --> [notes.db]
+    [update_all_contents.js] --> [notes.db]
+}
+
+package "数据库" {
+    [notes.db] as Database
+}
+
+[前端] --> [笔记模块]
+[前端] --> [后端]
+[后端] --> [数据库]
+
+@enduml
+```
+
+## 数据库ER图
+
+```plantuml
+@startuml
+entity "笔记分类" {
+    *id : INTEGER <<PK>>
+    --
+    *name : TEXT
+    parent_id : INTEGER <<FK>>
+    created_at : DATETIME
+    updated_at : DATETIME
+}
+
+entity "笔记内容" {
+    *id : INTEGER <<PK>>
+    --
+    *category_id : INTEGER <<FK>>
+    *title : TEXT
+    content : TEXT
+    created_at : DATETIME
+    updated_at : DATETIME
+}
+
+笔记分类 ||--o{ 笔记内容 : contains
+笔记分类 ||--o{ 笔记分类 : parent
+
+@enduml
+```
+
+## 文件结构
 ```
 .
 ├── index.html                # 主页面
@@ -11,44 +72,30 @@
 ├── site_data.json            # 站点数据配置文件
 ├── style.css                 # 全局样式
 ├── script.js                 # 主脚本文件
+├── notes.db                  # SQLite数据库文件
 ├── update_all_contents.js    # 内容更新脚本
 ├── notes/                    # 笔记目录
 │   ├── contents_template.html # 笔记内容模板
 │   ├── style1.css            # 笔记内容样式
 │   ├── subscript.js          # 笔记脚本
-│   ├── 数学/                 # 数学分类
-│   │   ├── 代数拓扑/         # 子分类
+│   ├── 流体力学/             # 流体力学分类
+│   │   ├── 计算流体/         # 子分类
 │   │   │   └── contents.html # 具体笔记
-│   │   └── ...               # 其他数学子分类
-│   ├── 物理/                 # 物理分类
-│   ├── 哲学/                 # 哲学分类
-│   └── 文化/                 # 文化分类
+│   │   └── ...               # 其他流体力学子分类
+│   ├── 数学/                 # 数学分类
+│   └── 物理/                 # 物理分类
 └── README.md                 # 项目说明文档
 ```
 
-## site_data.json
-- 存储站点配置信息
-- 包含笔记分类结构
-- 记录笔记元数据（创建时间、更新时间等）
-- 用于动态生成导航菜单
-
-## 依赖库
-- Express.js：用于本地开发服务器
-- KaTeX：用于数学公式渲染
-- Highlight.js：用于代码高亮
-- Font Awesome：用于图标显示
-
-## 组件依赖关系
-```
-index.html
-  ├── style.css
-  ├── script.js
-  │   ├── site_data.json
-  │   └── notes/subscript.js
-  └── notes/contents_template.html
-      ├── notes/style1.css
-      └── notes/subscript.js
-```
+## 技术栈
+- 前端：HTML5, CSS3, JavaScript
+- 后端：Node.js, Express.js
+- 数据库：SQLite
+- 工具：PlantUML（架构图/ER图）
+- 依赖库：
+  - KaTeX：数学公式渲染
+  - Highlight.js：代码高亮
+  - Font Awesome：图标显示
 
 ## 主要功能
 1. 笔记分类管理
@@ -92,6 +139,18 @@ index.html
    ```bash
    node update_all_contents.js
    ```
+
+5. 生成架构图/ER图：
+   ```bash
+   npm run diagram
+   ```
+
+## 数据库说明
+- 使用SQLite作为本地数据库
+- 数据库文件：notes.db
+- 包含两个主要表：
+  - 笔记分类表：存储分类信息
+  - 笔记内容表：存储具体笔记内容
 
 ## 贡献指南
 欢迎提交Pull Request，请遵循以下规范：
