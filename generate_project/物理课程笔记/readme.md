@@ -37,6 +37,12 @@ interface Category {
 
 ```plantuml
 @startuml
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
 package "前端" {
     class IndexPage {
         +render(): void
@@ -53,8 +59,8 @@ package "前端" {
         +loadNoteScripts(): void
     }
     
-    IndexPage --> StyleManager
-    IndexPage --> ScriptLoader
+    IndexPage --> StyleManager : uses
+    IndexPage --> ScriptLoader : uses
 }
 
 package "笔记模块" {
@@ -69,7 +75,7 @@ package "笔记模块" {
         +applyStyles(): void
     }
     
-    NoteRenderer --> NoteTemplate
+    NoteRenderer --> NoteTemplate : uses
 }
 
 package "后端" {
@@ -83,7 +89,7 @@ package "后端" {
         +updateSingle(noteId: number): void
     }
     
-    Server --> ContentUpdater
+    Server --> ContentUpdater : uses
 }
 
 package "数据库" {
@@ -94,9 +100,9 @@ package "数据库" {
     }
 }
 
-[前端] --> [笔记模块]
-[前端] --> [后端]
-[后端] --> [数据库]
+前端 --> 笔记模块 : interacts
+前端 --> 后端 : requests
+后端 --> 数据库 : queries
 
 @enduml
 ```
