@@ -246,9 +246,13 @@ window.editNote = async function(filename) {
         if (!contentResponse.ok) throw new Error('获取笔记内容失败');
         const markdown = await contentResponse.text();
         
-        // 跳转到index.html并传递markdown内容和note ID
-        const encodedContent = encodeURIComponent(markdown);
-        window.location.href = `../../../index.html?edit=${encodedContent}&id=${note.id}`;
+        // 将markdown内容存储在localStorage中
+        localStorage.setItem('editContent', markdown);
+        localStorage.setItem('editNoteId', note.id);
+        localStorage.setItem('editMode', 'true');
+        
+        // 跳转到index.html并标记编辑模式
+        window.location.href = `../../../index.html?editMode=true`;
         
     } catch (error) {
         console.error('编辑失败:', error);

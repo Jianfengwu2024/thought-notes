@@ -19,16 +19,35 @@ function copyFiles(sourceDir, targetDir, files) {
     fs.mkdirSync(targetDir, { recursive: true, mode: 0o755 });
   }
 
-  files.forEach(file => {
-    const sourcePath = path.join(sourceDir, file);
-    const targetPath = path.join(targetDir, file);
-    if (fs.existsSync(sourcePath)) {
-      fs.copyFileSync(sourcePath, targetPath);
-      console.log(`复制文件: ${sourcePath} -> ${targetPath}`);
-    } else {
-      console.warn(`源文件不存在: ${sourcePath}`);
+  if (Array.isArray(files)) {
+    // 复制指定文件列表
+    files.forEach(file => {
+      const sourcePath = path.join(sourceDir, file);
+      const targetPath = path.join(targetDir, file);
+      if (fs.existsSync(sourcePath)) {
+        fs.copyFileSync(sourcePath, targetPath);
+        console.log(`复制文件: ${sourcePath} -> ${targetPath}`);
+      } else {
+        console.warn(`源文件不存在: ${sourcePath}`);
+      }
+    });
+  } else {
+    // 递归复制整个目录
+    function copyRecursive(source, target) {
+      if (fs.lstatSync(source).isDirectory()) {
+        if (!fs.existsSync(target)) {
+          fs.mkdirSync(target, { recursive: true, mode: 0o755 });
+        }
+        fs.readdirSync(source).forEach(item => {
+          copyRecursive(path.join(source, item), path.join(target, item));
+        });
+      } else {
+        fs.copyFileSync(source, target);
+        console.log(`复制文件: ${source} -> ${target}`);
+      }
     }
-  });
+    copyRecursive(sourceDir, targetDir);
+  }
 }
 
 // 处理生成项目请求
@@ -64,7 +83,7 @@ app.post('/generate', (req, res) => {
       fs.mkdirSync(projectPath, { recursive: true, mode: 0o755 });
     }
 
-    // 复制主目录文件
+    // 复制主目录文件和node_modules
     const mainFiles = [
       'server.js',
       'notes.db',
@@ -77,6 +96,14 @@ app.post('/generate', (req, res) => {
       'package-lock.json'
     ];
     copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
+    
+    // 递归复制node_modules目录
+    const nodeModulesPath = path.join(__dirname, '../project_template/node_modules');
+    if (fs.existsSync(nodeModulesPath)) {
+      copyFiles(nodeModulesPath, path.join(projectPath, 'node_modules'), true);
+    } else {
+      console.warn('project_template中没有找到node_modules目录');
+    }
 
     // 创建 site_data.json
     const siteData = {

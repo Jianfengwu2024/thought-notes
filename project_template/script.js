@@ -52,25 +52,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const savePublishBtn = document.getElementById('save-publish-btn');
     const sidebar = document.getElementById('sidebar');
 
-    // 检查是否是从编辑模式跳转过来
+    // 检查URL参数
     const urlParams = new URLSearchParams(window.location.search);
-    const editContent = urlParams.get('edit');
-    const noteId = urlParams.get('id');
-    
-    // 如果是编辑模式，从localStorage获取内容
-    if (editContent && noteId) {
-        const decodedContent = decodeURIComponent(editContent);
-            markdownInput.innerText = decodedContent;
-            markdownInput.dispatchEvent(new Event('input'));
-        
-        // 保存编辑状态
-        localStorage.setItem('editMode', 'true');
-        localStorage.setItem('editNoteId', noteId);
-        localStorage.setItem('editContent', decodedContent);
+    const isEditMode = urlParams.get('editMode') === 'true';
 
-        // 修改保存按钮为保存修改
-        savePublishBtn.textContent = '保存修改';
-        savePublishBtn.style.backgroundColor = '#4CAF50';
+    // 如果是编辑模式，从localStorage获取内容
+    if (isEditMode) {
+        const noteId = localStorage.getItem('editNoteId');
+        const editContent = localStorage.getItem('editContent');
+        
+        if (noteId && editContent) {
+            markdownInput.innerText = editContent;
+            markdownInput.dispatchEvent(new Event('input'));
+
+            // 修改保存按钮为保存修改
+            savePublishBtn.textContent = '保存修改';
+            savePublishBtn.style.backgroundColor = '#4CAF50';
+        }
     } else {
         // 清除编辑状态
         localStorage.removeItem('editMode');
@@ -287,6 +285,29 @@ markdownInput.addEventListener('input', () => {
 
     // 保存并发布功能
     savePublishBtn.addEventListener('click', () => {
+        // 检查内容大小
+        const contentSize = new Blob([markdownInput.innerText]).size;
+        if (contentSize > 5 * 1024 * 1024) { // 5MB limit
+            alert('内容过大，请分成多个笔记保存');
+            return;
+        }
+        
+        // 检查压缩后大小
+        const compressedSize = new Blob([LZString.compressToUTF16(markdownInput.innerText)]).size;
+        if (compressedSize > 2 * 1024 * 1024) { // 2MB compressed limit
+            alert('压缩后内容仍然过大，请分成多个笔记保存');
+            return;
+        }
+
+        // 添加分块压缩支持
+        const compressInChunks = (text, chunkSize = 1024 * 1024) => {
+            const chunks = [];
+            for (let i = 0; i < text.length; i += chunkSize) {
+                chunks.push(LZString.compressToUTF16(text.slice(i, i + chunkSize)));
+            }
+            return chunks;
+        };
+
         // 显示对话框并初始化分类选项
         dialog.style.display = 'block';
         populateCategories();
@@ -317,12 +338,18 @@ markdownInput.addEventListener('input', () => {
             const noteId = localStorage.getItem('editNoteId');
             const endpoint = isEditMode ? 'http://localhost:3000/api/update' : 'http://localhost:3000/api/save';
             
+            // 压缩内容
+            const compressedContent = LZString.compressToUTF16(htmlOutput.innerHTML);
+            const compressedMarkdown = LZString.compressToUTF16(markdownInput.innerText);
+
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
+                    compressed: true,
                     id: noteId,
                     category,
                     subcategory,
@@ -413,12 +440,71 @@ markdownInput.addEventListener('input', () => {
     });
 
 
-    // 初始化示例内容
-    const initialContent = `# 欢迎使用我的科学笔记
+// 添加媒体播放器控制
+function initMediaControls() {
+    document.querySelectorAll('video, audio').forEach(media => {
+        // 添加播放控制
+        media.addEventListener('play', () => {
+            // 暂停其他媒体
+            document.querySelectorAll('video, audio').forEach(otherMedia => {
+                if (otherMedia !== media && !otherMedia.paused) {
+                    otherMedia.pause();
+                }
+            });
+        });
+
+        // 添加错误处理
+        media.addEventListener('error', (e) => {
+            console.error('媒体播放错误:', e);
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = '媒体播放失败';
+            errorMessage.style.color = 'red';
+            media.parentNode.insertBefore(errorMessage, media);
+        });
+
+        // 添加播放重试机制
+        media.addEventListener('abort', async () => {
+            try {
+                // 确保媒体已加载
+                if (media.readyState < 2) {
+                    await media.load();
+                }
+                // 添加延迟重试
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await media.play();
+            } catch (err) {
+                console.error('媒体播放失败:', err);
+                // 显示用户友好的错误提示
+                const errorMessage = document.createElement('div');
+                errorMessage.textContent = '媒体播放失败，请检查网络连接';
+                errorMessage.style.color = 'red';
+                media.parentNode.insertBefore(errorMessage, media);
+            }
+        });
+
+        // 处理play()被pause()中断的情况
+        media.addEventListener('play', () => {
+            media.playPromise = media.play();
+        });
+
+        media.addEventListener('pause', () => {
+            if (media.playPromise) {
+                media.playPromise.catch(err => {
+                    if (err.name !== 'AbortError') {
+                        console.error('播放错误:', err);
+                    }
+                });
+            }
+        });
+    });
+}
+
+// 初始化示例内容
+const initialContent = `# 欢迎使用我的科学笔记
 
 ## 这是一个Markdown编辑器
 
-- 支持**加粗**、*斜体*等格式
+- 支持**加粗**、*斜体*、==高亮==等格式
 - 支持代码块：
 \`\`\`javascript
 function hello() {
