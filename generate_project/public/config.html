@@ -28,18 +28,86 @@
   </div>
 
   <script>
-    // 页面加载时初始化默认分类
-    document.addEventListener('DOMContentLoaded', function() {
-      for (let i = 1; i <= 4; i++) {
-        const category = addCategory();
-        category.querySelector('input').value = `默认分类${i}`;
-        
-        for (let j = 1; j <= 4; j++) {
-          addSubCategory(category);
-          const subInputs = category.querySelectorAll('.subcategory-item input');
-          subInputs[subInputs.length - 1].value = `默认子分类${j}`;
+    // 确保所有DOM元素加载完成后再初始化默认分类
+    function initializeDefaultCategories() {
+      try {
+        console.log('开始初始化默认分类');
+        const categoriesDiv = document.getElementById('categories');
+        if (!categoriesDiv) {
+          throw new Error('无法找到分类容器元素');
         }
+
+        // 清空现有分类
+        categoriesDiv.innerHTML = '';
+        
+        // 创建分类数组
+        const categories = [];
+        for (let i = 1; i <= 4; i++) {
+          // 添加分类
+          addCategory();
+          
+          // 获取最新添加的分类
+          const category = categoriesDiv.lastElementChild;
+          if (!category) {
+            throw new Error(`添加第${i}个分类失败`);
+          }
+          categories.push(category);
+          
+          // 设置分类名称
+          const categoryInput = category.querySelector('input');
+          if (!categoryInput) {
+            throw new Error(`无法找到第${i}个分类的输入框`);
+          }
+          categoryInput.value = `默认分类${i}`;
+          console.log(`成功添加默认分类${i}`);
+          
+          // 添加子分类
+          for (let j = 1; j <= 4; j++) {
+            addSubCategory(category);
+            
+            // 获取最新添加的子分类输入框
+            const subInputs = category.querySelectorAll('.subcategory-item input');
+            if (!subInputs || subInputs.length === 0) {
+              throw new Error(`无法找到子分类输入框`);
+            }
+            subInputs[subInputs.length - 1].value = `默认子分类${j}`;
+            console.log(`成功在分类${i}下添加默认子分类${j}`);
+          }
+        }
+        console.log('默认分类初始化完成');
+      } catch (error) {
+        console.error('初始化默认分类时发生错误:', error);
+        alert('初始化默认分类失败，请检查控制台日志');
       }
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 等待所有资源加载完成
+      window.addEventListener('load', function() {
+        // 添加1秒延迟确保所有元素完全渲染
+        setTimeout(() => {
+          const categoriesDiv = document.getElementById('categories');
+          if (!categoriesDiv) {
+            console.error('分类容器元素未找到');
+            return;
+          }
+          
+          // 检查样式是否已加载
+          const computedStyle = window.getComputedStyle(categoriesDiv);
+          if (computedStyle.display === 'none') {
+            console.error('分类容器被隐藏');
+            categoriesDiv.style.display = 'block';
+          }
+          
+          try {
+            initializeDefaultCategories();
+          } catch (error) {
+            console.error('初始化默认分类失败:', error);
+            alert('初始化分类时出错，请检查控制台');
+          }
+        }, 1000);
+      });
     });
 
     function addCategory() {

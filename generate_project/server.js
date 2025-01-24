@@ -73,7 +73,7 @@ app.post('/generate', (req, res) => {
       'package.json',
       'package-lock.json'
     ];
-    copyFiles(path.join(__dirname, '../github_repo'), projectPath, mainFiles);
+    copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
 
     // 创建 site_data.json
     const siteData = {
@@ -89,7 +89,7 @@ app.post('/generate', (req, res) => {
     // 创建notes目录并复制文件
     const notesPath = path.join(projectPath, 'notes');
     const notesFiles = ['subscript.js', 'style1.css', 'contents_template.html'];
-    copyFiles(path.join(__dirname, '../github_repo/notes'), notesPath, notesFiles);
+    copyFiles(path.join(__dirname, '../project_template/notes'), notesPath, notesFiles);
 
     // 创建分类/子分类文件夹结构
     categories.forEach(category => {
