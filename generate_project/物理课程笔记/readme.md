@@ -3,29 +3,95 @@
 ## 项目概述
 这是一个专门用于管理物理课程笔记的本地Web应用程序，采用模块化设计，支持多级分类管理。系统包含完整的笔记展示、分类管理和本地开发环境。
 
+## 元数据结构
+
+```typescript
+interface NoteMetadata {
+  id: number;
+  title: string;
+  category: string;
+  tags: string[];
+  created_at: Date;
+  updated_at: Date;
+  content: string;
+  references?: string[];
+  equations?: string[];
+  code_snippets?: CodeSnippet[];
+}
+
+interface CodeSnippet {
+  language: string;
+  code: string;
+  description?: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  parent_id?: number;
+  children: Category[];
+}
+```
+
 ## 系统架构
 
 ```plantuml
 @startuml
 package "前端" {
-    [index.html] --> [style.css]
-    [index.html] --> [script.js]
-    [script.js] --> [site_data.json]
-    [script.js] --> [notes/subscript.js]
+    class IndexPage {
+        +render(): void
+        +bindEvents(): void
+    }
+    
+    class StyleManager {
+        +loadGlobalStyles(): void
+        +loadNoteStyles(): void
+    }
+    
+    class ScriptLoader {
+        +loadMainScript(): void
+        +loadNoteScripts(): void
+    }
+    
+    IndexPage --> StyleManager
+    IndexPage --> ScriptLoader
 }
 
 package "笔记模块" {
-    [notes/contents_template.html] --> [notes/style1.css]
-    [notes/contents_template.html] --> [notes/subscript.js]
+    class NoteRenderer {
+        +renderContent(note: NoteMetadata): void
+        +renderMath(): void
+        +highlightCode(): void
+    }
+    
+    class NoteTemplate {
+        +getTemplate(): string
+        +applyStyles(): void
+    }
+    
+    NoteRenderer --> NoteTemplate
 }
 
 package "后端" {
-    [server.js] --> [notes.db]
-    [update_all_contents.js] --> [notes.db]
+    class Server {
+        +start(): void
+        +setupRoutes(): void
+    }
+    
+    class ContentUpdater {
+        +updateAll(): void
+        +updateSingle(noteId: number): void
+    }
+    
+    Server --> ContentUpdater
 }
 
 package "数据库" {
-    [notes.db] as Database
+    class Database {
+        +connect(): void
+        +query(sql: string): any
+        +close(): void
+    }
 }
 
 [前端] --> [笔记模块]
@@ -123,6 +189,17 @@ entity "笔记内容" {
 1. 安装依赖：
    ```bash
    npm install
+   ```
+   
+   项目依赖说明：
+   - express@^4.18.2：Web服务器框架
+   - marked@^5.1.1：Markdown解析器
+   - sqlite3@^5.1.6：SQLite数据库驱动
+   - nodemon@^3.0.2：开发服务器热重载工具（开发依赖）
+
+   Windows静默安装命令：
+   ```bash
+   npm install --silent express@^4.18.2 marked@^5.1.1 sqlite3@^5.1.6; npm install --silent -D nodemon@^3.0.2
    ```
 
 2. 启动开发服务器：
