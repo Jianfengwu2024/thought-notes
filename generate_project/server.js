@@ -4,16 +4,19 @@ const path = require('path');
 const { exec } = require('child_process');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3001;
 
 // 静态文件服务
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'config.html'));
+});
 app.use(express.json());
 
 // 复制文件函数
 function copyFiles(sourceDir, targetDir, files) {
   if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true });
+    fs.mkdirSync(targetDir, { recursive: true, mode: 0o755 });
   }
 
   files.forEach(file => {
@@ -42,9 +45,9 @@ app.post('/generate', (req, res) => {
 
   // 验证分类数据结构
   if (!categories.every(cat => typeof cat === 'object' && 
-                          cat !== null && 
-                          typeof cat.name === 'string' &&
-                          (!cat.subcategories || Array.isArray(cat.subcategories)))) {
+                        cat !== null && 
+                        typeof cat.name === 'string' &&
+                        (!cat.subcategories || Array.isArray(cat.subcategories)))) {
     return res.status(400).json({
       success: false,
       message: '分类数据结构无效，每个分类必须包含name属性和可选的subcategories数组'
@@ -58,7 +61,7 @@ app.post('/generate', (req, res) => {
   try {
     // 创建项目目录
     if (!fs.existsSync(projectPath)) {
-      fs.mkdirSync(projectPath);
+      fs.mkdirSync(projectPath, { recursive: true, mode: 0o755 });
     }
 
     // 复制主目录文件
@@ -94,7 +97,7 @@ app.post('/generate', (req, res) => {
     // 创建分类/子分类文件夹结构
     categories.forEach(category => {
       const categoryPath = path.join(notesPath, category.name);
-      fs.mkdirSync(categoryPath, { recursive: true });
+      fs.mkdirSync(categoryPath, { recursive: true, mode: 0o755 });
       console.log(`创建分类目录: ${categoryPath}`);
 
       if (category.subcategories && Array.isArray(category.subcategories)) {
@@ -108,7 +111,7 @@ app.post('/generate', (req, res) => {
 
           if (subcategoryName !== '') {
             const subcategoryPath = path.join(categoryPath, subcategoryName);
-            fs.mkdirSync(subcategoryPath, { recursive: true });
+            fs.mkdirSync(subcategoryPath, { recursive: true, mode: 0o755 });
             console.log(`创建子分类目录: ${subcategoryPath}`);
             // 在每个子分类下创建contents.html
             fs.writeFileSync(path.join(subcategoryPath, 'contents.html'), '');
@@ -121,8 +124,11 @@ app.post('/generate', (req, res) => {
       }
     });
 
-    // 执行update_all_contents.js
-    exec('node update_all_contents.js', { cwd: projectPath }, (error, stdout, stderr) => {
+    // 跨平台执行update_all_contents.js
+    const scriptPath = path.join(projectPath, 'update_all_contents.js');
+    const command = `node "${scriptPath}"`;
+    
+    exec(command, { cwd: projectPath, shell: true }, (error, stdout, stderr) => {
       if (error) {
         console.error(`执行update_all_contents.js失败: ${error.message}`);
         return res.json({
