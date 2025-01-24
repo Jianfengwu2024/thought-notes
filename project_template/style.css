@@ -43,7 +43,7 @@ body {
 /* Improve code block readability */
 pre, code {
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 header {
