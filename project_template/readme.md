@@ -77,18 +77,22 @@ index.html
    ```bash
    npm install
    ```
+2. 安装ws模块:
+   ```bash
+   npm install ws
+   ```
 
-2. 启动开发服务器：
+3. 启动开发服务器：
    ```bash
    npm start
    ```
 
-3. 访问应用：
+4. 访问应用：
    ```
    http://localhost:3000
    ```
 
-4. 更新内容：
+5. 更新内容：
    ```bash
    node update_all_contents.js
    ```
