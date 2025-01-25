@@ -23,6 +23,39 @@ body {
     line-height: 1.6;
 }
 
+/* Math error styling */
+.math-error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 2px 4px;
+    border-radius: 3px;
+    border: 1px dashed #d32f2f;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.math-error::before {
+    content: "⚠ ";
+    color: #d32f2f;
+}
+
+.katex-error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px dashed #d32f2f;
+    margin: 4px 0;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.katex-error::before {
+    content: "Math Error: ";
+    font-weight: bold;
+}
+
+/* 其他样式保持不变 */
 #html-output {
     font-family: inherit;
     font-size: 18px;
@@ -577,37 +610,4 @@ code {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
-}
-
-.dialog-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.dialog-buttons button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-#confirm-save {
-    background-color: #4CAF50;
-    color: white;
-}
-
-#cancel-save {
-    background-color: #f44336;
-    color: white;
-}
-
-/* 高亮文本样式 */
-mark {
-    background-color: #3bff3e;
-    padding: 0.1em 0.3em;
-    border-radius: 0.25em;
-    color: #000;
 }
