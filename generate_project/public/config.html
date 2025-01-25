@@ -25,9 +25,43 @@
     </div>
 
     <button class="btn generate-btn" onclick="generateProject()">生成项目</button>
+    <button class="btn import-btn" onclick="importSiteData()">导入配置</button>
   </div>
 
   <script>
+    function importSiteData() {
+      fetch('site_data.json')
+        .then(response => response.json())
+        .then(data => {
+          // 设置项目标题
+          document.getElementById('title').value = data.title;
+          
+          // 清空现有分类
+          const categoriesDiv = document.getElementById('categories');
+          categoriesDiv.innerHTML = '';
+          
+          // 添加新分类
+          data.categories.forEach(category => {
+            addCategory();
+            const categoryDiv = categoriesDiv.lastElementChild;
+            const categoryInput = categoryDiv.querySelector('input');
+            categoryInput.value = category.name;
+            
+            // 添加子分类
+            category.subcategories.forEach(subcategory => {
+              addSubCategory(categoryDiv);
+              const subInputs = categoryDiv.querySelectorAll('.subcategory-item input');
+              subInputs[subInputs.length - 1].value = subcategory.name;
+            });
+          });
+          
+          alert('配置导入成功！');
+        })
+        .catch(error => {
+          console.error('导入配置失败:', error);
+          alert('导入配置失败，请检查控制台日志');
+        });
+    }
     // 确保所有DOM元素加载完成后再初始化默认分类
     function initializeDefaultCategories() {
       try {

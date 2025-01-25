@@ -96,14 +96,6 @@ app.post('/generate', (req, res) => {
       'package-lock.json'
     ];
     copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
-    
-    // 递归复制node_modules目录
-    const nodeModulesPath = path.join(__dirname, '../project_template/node_modules');
-    if (fs.existsSync(nodeModulesPath)) {
-      copyFiles(nodeModulesPath, path.join(projectPath, 'node_modules'), true);
-    } else {
-      console.warn('project_template中没有找到node_modules目录');
-    }
 
     // 创建 site_data.json
     const siteData = {

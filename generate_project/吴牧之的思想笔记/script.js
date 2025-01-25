@@ -1,50 +1,84 @@
-// 提取并保存公式内容
-function extractMath(content) {
-    const mathBlocks = [];
-    // 替换\tilde{}为\widetilde{}
-    content = content.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
-    // 提取段落公式并添加data-md-type
-    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, p1) => {
-        const trimmed = p1.trim();
-        if (trimmed.length > 0) {
-            const id = `math-block-${mathBlocks.length}`;
-            mathBlocks.push(trimmed);
-            return `<span data-md-type="math-block">${id}</span>`;
-        }
-        return ''; // 空公式块直接移除
-    });
-    return { content, mathBlocks };
-}
-
-// 渲染数学公式
-function renderMath(content, mathBlocks) {
-    // 渲染行内公式并添加data-md-type
-    content = content.replace(/\$(.*?)\$/g, (match, p1) => {
-        try {
-            return `<span data-md-type="math-inline">${katex.renderToString(p1, { throwOnError: false })}</span>`;
-        } catch (e) {
-            return match;
-        }
-    });
-
-    // 渲染段落公式
-    mathBlocks.forEach((math, index) => {
-        const id = `math-block-${index}`;
-        try {
-            const rendered = katex.renderToString(math, { displayMode: true, throwOnError: false });
-            content = content.replace(`<span data-md-type="math-block">${id}</span>`, 
-                `<div data-md-type="math-block">${rendered}</div>`);
-        } catch (e) {
-            content = content.replace(`<span data-md-type="math-block">${id}</span>`, 
-                `<div data-md-type="math-block">$$${math}$$</div>`);
-        }
-    });
-
-    // 添加math-tag类型
-    content = content.replace(/(\\[a-zA-Z]+)/g, '<span data-md-type="math-tag">$1</span>');
-
-    return content;
-}
+// 配置marked解析器
+marked.use({
+  extensions: [{
+    name: 'mathInline',
+    level: 'inline',
+    start(src) { return src.match(/\$/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^\$([^$]+)\$/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'mathInline',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      try {
+        // 预处理特殊符号
+        const processedText = token.text
+          .replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}')
+          .replace(/\\hat\{([^}]*)\}/g, '\\widehat{$1}');
+          
+        return `<span data-md-type="math-inline">${katex.renderToString(processedText, {
+          throwOnError: false,
+          strict: false,
+          macros: {
+            "\\RR": "\\mathbb{R}",
+            "\\CC": "\\mathbb{C}",
+            "\\ZZ": "\\mathbb{Z}",
+            "\\NN": "\\mathbb{N}",
+            "\\QQ": "\\mathbb{Q}"
+          }
+        })}</span>`;
+      } catch (e) {
+        console.error('Inline math rendering error:', e);
+        return `<span class="math-error">${token.raw}</span>`;
+      }
+    }
+  }, {
+    name: 'mathBlock',
+    level: 'block',
+    start(src) { return src.match(/\$\$/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^\$\$([\s\S]*?)\$\$/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'mathBlock',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      try {
+        // 预处理特殊符号
+        const processedText = token.text
+          .replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}')
+          .replace(/\\hat\{([^}]*)\}/g, '\\widehat{$1}');
+          
+        return `<div data-md-type="math-block">${katex.renderToString(processedText, {
+          displayMode: true,
+          throwOnError: false,
+          strict: false,
+          macros: {
+            "\\RR": "\\mathbb{R}",
+            "\\CC": "\\mathbb{C}",
+            "\\ZZ": "\\mathbb{Z}",
+            "\\NN": "\\mathbb{N}",
+            "\\QQ": "\\mathbb{Q}"
+          }
+        })}</div>`;
+      } catch (e) {
+        console.error('Block math rendering error:', e);
+        return `<div class="math-error">${token.raw}</div>`;
+      }
+    }
+  }]
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const markdownInput = document.getElementById('markdown-input');
@@ -133,50 +167,46 @@ document.addEventListener('DOMContentLoaded', () => {
         item.dataset.id = `category-${index}`;
     });
     
-// 配置marked解析器
-marked.use({
-  extensions: [{
-    name: 'highlight',
-    level: 'inline',
-    start(src) { return src.match(/==/)?.index; },
-    tokenizer(src, tokens) {
-      const rule = /^==([^=]+)==/;
-      const match = rule.exec(src);
-      if (match) {
-        return {
-          type: 'highlight',
-          raw: match[0],
-          text: match[1].trim()
-        };
-      }
-    },
-    renderer(token) {
-      return `<mark>${token.text}</mark>`;
-    }
-  }]
-});
 
 // 实时Markdown解析和自动保存
-markdownInput.addEventListener('input', () => {
-    const markdownText = markdownInput.innerText;
-    // 先提取公式
-    const { content, mathBlocks } = extractMath(markdownText);
-    // 先渲染公式
-    const renderedContent = renderMath(content, mathBlocks);
-    // 再解析Markdown
-    let html = marked.parse(renderedContent);
-        htmlOutput.innerHTML = html;
-        
-        // 自动保存Markdown内容
-        localStorage.setItem('markdownContent', markdownText);
-    });
+let lastRenderedContent = '';
+let isRendering = false;
 
-    // 定期保存（每5秒）
-    setInterval(() => {
-        if (markdownInput.innerText) {
-            localStorage.setItem('markdownContent', markdownInput.innerText);
-        }
-    }, 5000);
+const renderMarkdown = () => {
+    if (isRendering) return;
+    isRendering = true;
+    
+    const markdownText = markdownInput.innerText;
+    if (markdownText === lastRenderedContent) {
+        isRendering = false;
+        return;
+    }
+    
+    // 替换\tilde{}为\widetilde{}
+    const processedText = markdownText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
+    // 解析Markdown并渲染公式
+    const html = marked.parse(processedText);
+    htmlOutput.innerHTML = html;
+    lastRenderedContent = markdownText;
+    
+    // 自动保存Markdown内容
+    localStorage.setItem('markdownContent', markdownText);
+    isRendering = false;
+};
+
+// 防抖处理
+let renderTimeout;
+markdownInput.addEventListener('input', () => {
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(renderMarkdown, 300);
+});
+
+// 定期保存（每5秒）
+setInterval(() => {
+    if (markdownInput.innerText && markdownInput.innerText !== lastRenderedContent) {
+        renderMarkdown();
+    }
+}, 5000);
 
     // 获取对话框相关元素
     const dialog = document.getElementById('category-dialog');
@@ -337,10 +367,6 @@ markdownInput.addEventListener('input', () => {
             const isEditMode = localStorage.getItem('editMode') === 'true';
             const noteId = localStorage.getItem('editNoteId');
             const endpoint = isEditMode ? 'http://localhost:3000/api/update' : 'http://localhost:3000/api/save';
-            
-            // 压缩内容
-            const compressedContent = LZString.compressToUTF16(htmlOutput.innerHTML);
-            const compressedMarkdown = LZString.compressToUTF16(markdownInput.innerText);
 
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -439,66 +465,6 @@ markdownInput.addEventListener('input', () => {
         }
     });
 
-
-// 添加媒体播放器控制
-function initMediaControls() {
-    document.querySelectorAll('video, audio').forEach(media => {
-        // 添加播放控制
-        media.addEventListener('play', () => {
-            // 暂停其他媒体
-            document.querySelectorAll('video, audio').forEach(otherMedia => {
-                if (otherMedia !== media && !otherMedia.paused) {
-                    otherMedia.pause();
-                }
-            });
-        });
-
-        // 添加错误处理
-        media.addEventListener('error', (e) => {
-            console.error('媒体播放错误:', e);
-            const errorMessage = document.createElement('div');
-            errorMessage.textContent = '媒体播放失败';
-            errorMessage.style.color = 'red';
-            media.parentNode.insertBefore(errorMessage, media);
-        });
-
-        // 添加播放重试机制
-        media.addEventListener('abort', async () => {
-            try {
-                // 确保媒体已加载
-                if (media.readyState < 2) {
-                    await media.load();
-                }
-                // 添加延迟重试
-                await new Promise(resolve => setTimeout(resolve, 500));
-                await media.play();
-            } catch (err) {
-                console.error('媒体播放失败:', err);
-                // 显示用户友好的错误提示
-                const errorMessage = document.createElement('div');
-                errorMessage.textContent = '媒体播放失败，请检查网络连接';
-                errorMessage.style.color = 'red';
-                media.parentNode.insertBefore(errorMessage, media);
-            }
-        });
-
-        // 处理play()被pause()中断的情况
-        media.addEventListener('play', () => {
-            media.playPromise = media.play();
-        });
-
-        media.addEventListener('pause', () => {
-            if (media.playPromise) {
-                media.playPromise.catch(err => {
-                    if (err.name !== 'AbortError') {
-                        console.error('播放错误:', err);
-                    }
-                });
-            }
-        });
-    });
-}
-
 // 初始化示例内容
 const initialContent = `# 欢迎使用我的科学笔记
 
@@ -548,11 +514,9 @@ function hello() {
     markdownInput.innerText = localStorage.getItem('editMode') === 'true' ? 
         localStorage.getItem('editContent') || initialContent : 
         initialContent;
-    // 先提取公式
-    const { content, mathBlocks } = extractMath(markdownInput.innerText);
-    // 解析Markdown
-    let html = marked.parse(content);
-    // 渲染公式
-    html = renderMath(html, mathBlocks);
+    // 替换\tilde{}为\widetilde{}
+    const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
+    // 解析Markdown并渲染公式
+    const html = marked.parse(processedText);
     htmlOutput.innerHTML = html;
 });
