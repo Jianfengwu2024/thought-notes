@@ -367,10 +367,6 @@ setInterval(() => {
             const isEditMode = localStorage.getItem('editMode') === 'true';
             const noteId = localStorage.getItem('editNoteId');
             const endpoint = isEditMode ? 'http://localhost:3000/api/update' : 'http://localhost:3000/api/save';
-            
-            // 压缩内容
-            const compressedContent = LZString.compressToUTF16(htmlOutput.innerHTML);
-            const compressedMarkdown = LZString.compressToUTF16(markdownInput.innerText);
 
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -468,66 +464,6 @@ setInterval(() => {
             }, 3000);
         }
     });
-
-
-// 添加媒体播放器控制
-function initMediaControls() {
-    document.querySelectorAll('video, audio').forEach(media => {
-        // 添加播放控制
-        media.addEventListener('play', () => {
-            // 暂停其他媒体
-            document.querySelectorAll('video, audio').forEach(otherMedia => {
-                if (otherMedia !== media && !otherMedia.paused) {
-                    otherMedia.pause();
-                }
-            });
-        });
-
-        // 添加错误处理
-        media.addEventListener('error', (e) => {
-            console.error('媒体播放错误:', e);
-            const errorMessage = document.createElement('div');
-            errorMessage.textContent = '媒体播放失败';
-            errorMessage.style.color = 'red';
-            media.parentNode.insertBefore(errorMessage, media);
-        });
-
-        // 添加播放重试机制
-        media.addEventListener('abort', async () => {
-            try {
-                // 确保媒体已加载
-                if (media.readyState < 2) {
-                    await media.load();
-                }
-                // 添加延迟重试
-                await new Promise(resolve => setTimeout(resolve, 500));
-                await media.play();
-            } catch (err) {
-                console.error('媒体播放失败:', err);
-                // 显示用户友好的错误提示
-                const errorMessage = document.createElement('div');
-                errorMessage.textContent = '媒体播放失败，请检查网络连接';
-                errorMessage.style.color = 'red';
-                media.parentNode.insertBefore(errorMessage, media);
-            }
-        });
-
-        // 处理play()被pause()中断的情况
-        media.addEventListener('play', () => {
-            media.playPromise = media.play();
-        });
-
-        media.addEventListener('pause', () => {
-            if (media.playPromise) {
-                media.playPromise.catch(err => {
-                    if (err.name !== 'AbortError') {
-                        console.error('播放错误:', err);
-                    }
-                });
-            }
-        });
-    });
-}
 
 // 初始化示例内容
 const initialContent = `# 欢迎使用我的科学笔记
