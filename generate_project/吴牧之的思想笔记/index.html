@@ -12,7 +12,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/markdown/markdown.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-    <script src="script.js" defer></script>
+  <script src="script.js" defer></script>
+  <script src="advanced_script.js" defer></script>
     <script>
         // 在浏览器环境中提供fs模块的polyfill
         window.fs = {
@@ -92,8 +93,74 @@
         .catch(error => console.error('Error loading site data:', error));
 </script>
         <div class="markdown-container">
-            <div id="markdown-input" class="markdown-input" contenteditable="true" spellcheck="false"></div>
+            <div id="markdown-input" class="markdown-input" contenteditable="true" spellcheck="false">
+            </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // 初始化示例内容
+                const initialContent = `
+# 欢迎使用我的科学笔记
+
+## 这是一个Markdown编辑器
+
+- 支持**加粗**、*斜体*、==高亮==等格式
+- 支持代码块：
+\`\`\`javascript
+function hello() {
+    console.log('Hello World!');
+}
+\`\`\`
+- 支持数学公式：
+  行内公式：$E = mc^2$
+  段落公式：
+  $$
+  \\int_a^b f(x)dx = F(b) - F(a)
+  $$
+  
+  矩阵示例：
+  $$
+  \\begin{pmatrix}
+  1 & 2 \\\\
+  3 & 4
+  \\end{pmatrix}
+  $$
+
+  多行对齐示例：
+  $$
+  \\begin{align}
+  a &= b+c \\\\
+  & = d-e
+  \\end{align}
+  $$
+
+  查看 tilde 符号 $\\tilde{a}$ 的支持
+
+  不带编号的多行对齐示例：
+  $$
+  \\begin{align*}
+  a &= b+c \\\\
+  & = d-e
+  \\end{align*}
+  $$
+`;
+
+            // 强制设置初始内容
+            const markdownInput = document.getElementById('markdown-input');
+            const htmlOutput = document.getElementById('html-output');
+            
+            markdownInput.innerText = initialContent;
+            // 替换\tilde{}为\widetilde{}
+            const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
+            // 解析Markdown并渲染公式
+            const html = marked.parse(processedText);
+            htmlOutput.innerHTML = html;
+            
+            // 确保元素可见
+            markdownInput.style.display = 'block';
+            htmlOutput.style.display = 'block';
+            });
+        </script>
         <div class="html-container">
             <div id="html-output"></div>
         </div>

@@ -77,12 +77,62 @@ marked.use({
         return `<div class="math-error">${token.raw}</div>`;
       }
     }
+  },
+  {
+    name: 'highlight',
+    level: 'inline',
+    start(src) { return src.match(/==/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^==([^=]+)==/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'highlight',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      return `<span class="highlight">${token.text}</span>`;
+    }
+  },
+  {
+    name: 'boldHighlight',
+    level: 'inline',
+    start(src) { return src.match(/==\*\*/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^==\*\*([^=]+)\*\*==/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'boldHighlight',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      return `<span class="highlight"><strong>${token.text}</strong></span>`;
+    }
   }]
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 清理所有临时存储数据
+    Object.keys(localStorage).forEach(key => {
+        // 保留必要的持久化数据
+        if (!['navWidth', 'selectedCategory'].includes(key)) {
+            localStorage.removeItem(key);
+        }
+    });
+
     const markdownInput = document.getElementById('markdown-input');
     const htmlOutput = document.getElementById('html-output');
+    if (!markdownInput || !htmlOutput) {
+        console.error('Required elements not found');
+        return;
+    }
     const savePublishBtn = document.getElementById('save-publish-btn');
     const sidebar = document.getElementById('sidebar');
 
@@ -131,6 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 如果是index.html页面，初始化markdown编辑器
     if (markdownInput && htmlOutput) {
+        // 设置初始内容
+        if (localStorage.getItem('editMode') === 'true') {
+            markdownInput.innerText = localStorage.getItem('editContent') || '';
+        }
+        // 替换\tilde{}为\widetilde{}
+        const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
+        // 解析Markdown并渲染公式
+        const html = marked.parse(processedText);
+        htmlOutput.innerHTML = html;
         // 恢复侧边栏宽度
         const savedNavWidth = localStorage.getItem('navWidth');
         if (savedNavWidth) {
@@ -291,6 +350,9 @@ setInterval(() => {
                 document.querySelectorAll('.subcategory').forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
                 
+                // 保存选中的分类
+                const category = this.closest('.category').querySelector('.category-title').textContent;
+                const subcategoryName = this.textContent;
                 localStorage.setItem('selectedCategory', this.dataset.id);
 
                 // 如果是index.html页面，保持编辑器可见
@@ -461,4 +523,5 @@ setInterval(() => {
             }, 3000);
         }
     });
+
 });

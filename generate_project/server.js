@@ -83,7 +83,7 @@ app.post('/generate', (req, res) => {
       fs.mkdirSync(projectPath, { recursive: true, mode: 0o755 });
     }
 
-    // 复制主目录文件和node_modules
+    // 复制主目录文件
     const mainFiles = [
       'server.js',
       'notes.db',
@@ -93,7 +93,8 @@ app.post('/generate', (req, res) => {
       'index.html',
       'readme.md',
       'package.json',
-      'package-lock.json'
+      'package-lock.json',
+      'start_server.dat'
     ];
     copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
 
