@@ -4,6 +4,8 @@
 
 ## 使用步骤
 
+使用傻瓜dat: 
+
 1. 安装node.js
 
 2. 安装 npm 以及 ws, 注意，安装npm 就是npm install 不带任何参数。
@@ -11,7 +13,7 @@
   ```bash
    npm install
    npm install ws
-   ```
+  ```
 
 3. **启动生成器**
    - 在当前目录运行以下命令：
