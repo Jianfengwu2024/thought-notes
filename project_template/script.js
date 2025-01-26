@@ -77,12 +77,62 @@ marked.use({
         return `<div class="math-error">${token.raw}</div>`;
       }
     }
+  },
+  {
+    name: 'highlight',
+    level: 'inline',
+    start(src) { return src.match(/==/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^==([^=]+)==/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'highlight',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      return `<span class="highlight">${token.text}</span>`;
+    }
+  },
+  {
+    name: 'boldHighlight',
+    level: 'inline',
+    start(src) { return src.match(/==\*\*/)?.index; },
+    tokenizer(src, tokens) {
+      const rule = /^==\*\*([^=]+)\*\*==/;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'boldHighlight',
+          raw: match[0],
+          text: match[1].trim()
+        };
+      }
+    },
+    renderer(token) {
+      return `<span class="highlight"><strong>${token.text}</strong></span>`;
+    }
   }]
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 清理所有临时存储数据
+    Object.keys(localStorage).forEach(key => {
+        // 保留必要的持久化数据
+        if (!['navWidth', 'selectedCategory'].includes(key)) {
+            localStorage.removeItem(key);
+        }
+    });
+
     const markdownInput = document.getElementById('markdown-input');
     const htmlOutput = document.getElementById('html-output');
+    if (!markdownInput || !htmlOutput) {
+        console.error('Required elements not found');
+        return;
+    }
     const savePublishBtn = document.getElementById('save-publish-btn');
     const sidebar = document.getElementById('sidebar');
 
@@ -131,6 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 如果是index.html页面，初始化markdown编辑器
     if (markdownInput && htmlOutput) {
+        // 设置初始内容
+        if (localStorage.getItem('editMode') === 'true') {
+            markdownInput.innerText = localStorage.getItem('editContent') || '';
+        }
+        // 替换\tilde{}为\widetilde{}
+        const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
+        // 解析Markdown并渲染公式
+        const html = marked.parse(processedText);
+        htmlOutput.innerHTML = html;
         // 恢复侧边栏宽度
         const savedNavWidth = localStorage.getItem('navWidth');
         if (savedNavWidth) {
@@ -465,58 +524,4 @@ setInterval(() => {
         }
     });
 
-// 初始化示例内容
-const initialContent = `# 欢迎使用我的科学笔记
-
-## 这是一个Markdown编辑器
-
-- 支持**加粗**、*斜体*、==高亮==等格式
-- 支持代码块：
-\`\`\`javascript
-function hello() {
-    console.log('Hello World!');
-}
-\`\`\`
-- 支持数学公式：
-  行内公式：$E = mc^2$
-  段落公式：
-  $$
-  \\int_a^b f(x)dx = F(b) - F(a)
-  $$
-  
-  矩阵示例：
-  $$
-  \\begin{pmatrix}
-  1 & 2 \\\\
-  3 & 4
-  \\end{pmatrix}
-  $$
-
-  多行对齐示例：
-  $$
-  \\begin{align}
-  a &= b+c \\\\
-  & = d-e
-  \\end{align}
-  $$
-
-  查看 tilde 符号 $\\tilde{a}$ 的支持
-
-  不带编号的多行对齐示例：
-  $$
-  \\begin{align*}
-  a &= b+c \\\\
-  & = d-e
-  \\end{align*}
-  $$
-`;
-
-    markdownInput.innerText = localStorage.getItem('editMode') === 'true' ? 
-        localStorage.getItem('editContent') || initialContent : 
-        initialContent;
-    // 替换\tilde{}为\widetilde{}
-    const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
-    // 解析Markdown并渲染公式
-    const html = marked.parse(processedText);
-    htmlOutput.innerHTML = html;
 });

@@ -291,9 +291,6 @@ setInterval(() => {
                 document.querySelectorAll('.subcategory').forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
                 
-                // 保存选中的分类
-                const category = this.closest('.category').querySelector('.category-title').textContent;
-                const subcategoryName = this.textContent;
                 localStorage.setItem('selectedCategory', this.dataset.id);
 
                 // 如果是index.html页面，保持编辑器可见
@@ -464,59 +461,4 @@ setInterval(() => {
             }, 3000);
         }
     });
-
-// 初始化示例内容
-const initialContent = `# 欢迎使用我的科学笔记
-
-## 这是一个Markdown编辑器
-
-- 支持**加粗**、*斜体*、==高亮==等格式
-- 支持代码块：
-\`\`\`javascript
-function hello() {
-    console.log('Hello World!');
-}
-\`\`\`
-- 支持数学公式：
-  行内公式：$E = mc^2$
-  段落公式：
-  $$
-  \\int_a^b f(x)dx = F(b) - F(a)
-  $$
-  
-  矩阵示例：
-  $$
-  \\begin{pmatrix}
-  1 & 2 \\\\
-  3 & 4
-  \\end{pmatrix}
-  $$
-
-  多行对齐示例：
-  $$
-  \\begin{align}
-  a &= b+c \\\\
-  & = d-e
-  \\end{align}
-  $$
-
-  查看 tilde 符号 $\\tilde{a}$ 的支持
-
-  不带编号的多行对齐示例：
-  $$
-  \\begin{align*}
-  a &= b+c \\\\
-  & = d-e
-  \\end{align*}
-  $$
-`;
-
-    markdownInput.innerText = localStorage.getItem('editMode') === 'true' ? 
-        localStorage.getItem('editContent') || initialContent : 
-        initialContent;
-    // 替换\tilde{}为\widetilde{}
-    const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
-    // 解析Markdown并渲染公式
-    const html = marked.parse(processedText);
-    htmlOutput.innerHTML = html;
 });

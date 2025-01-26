@@ -1,3 +1,5 @@
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 :root {
     --nav-width: 20%;
     --gap: 10px;
@@ -8,9 +10,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
-/* Import Inter font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
@@ -39,6 +38,19 @@ body {
     color: #d32f2f;
 }
 
+/* Highlight styling */
+.highlight {
+    background-color: #b0ffc4;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.highlight strong {
+    background-color: #82ffc5;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
 .katex-error {
     color: #d32f2f;
     background-color: #ffebee;
@@ -57,11 +69,16 @@ body {
 
 /* 其他样式保持不变 */
 #html-output {
+    display: block !important;
     font-family: inherit;
     font-size: 18px;
     line-height: 1.6;
     color: #333;
     font-weight: 500;
+    padding: 15px;
+    background-color: rgba(251, 247, 233, 0.961);
+    min-height: 300px;
+    overflow-y: auto;
 }
 
 #markdown-input {
@@ -233,18 +250,20 @@ header h1 {
 
 #sidebar {
     width: var(--nav-width);
-    background-color: #f8f9fa;
-    border-right: 1px solid #ddd;
+    padding: 15px;
+    background: #f5f7fa;
+    border-right: 1px solid #e3e8ee;
     resize: horizontal;
     overflow: auto;
     min-width: 150px;
     max-width: 40%;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .markdown-container {
     width: 42%;
     padding: 15px 0 15px 15px;
-    background-color: #e8f5e9;
+    background-color: white;
     overflow-y: auto;
     height: calc(100vh - 80px);
     min-height: 300px;
@@ -280,7 +299,7 @@ header h1 {
 .html-container {
     width: 58%;
     padding: 15px 0 15px 15px;
-    background-color: #e8f5e9;
+    background-color: rgb(249, 249, 249);
     overflow-y: auto;
     height: calc(100vh - 80px);
     min-height: 300px;
@@ -313,16 +332,6 @@ header h1 {
     background: #0d47a1;
 }
 
-.html-container::-webkit-scrollbar-thumb {
-    background: #2196F3;
-    border-radius: 6px;
-    border: 2px solid #f0f0f0;
-}
-
-.html-container::-webkit-scrollbar-thumb:hover {
-    background: #1976D2;
-}
-
 .markdown-input {
     width: 100%;
     padding: 15px;
@@ -331,8 +340,8 @@ header h1 {
     font-family: monospace;
     font-size: 14px;
     line-height: 1.5;
-    background-color: #e8f5e9;
-    color: #2e7d32;
+    background-color: white;
+    color: #333;
     overflow-y: auto;
     white-space: pre-wrap;
     outline: none;
@@ -432,21 +441,20 @@ header h1 {
     font-weight: bold;
 }
 
-#html-output {
-    width: 100%;
-    padding: 15px;
-    overflow-y: auto;
-    background-color: inherit;
-    color: #5c4b36;
-    line-height: 1.6;
+/* Markdown highlight syntax */
+.markdown-input [data-md-type="highlight"],
+#html-output [data-md-type="highlight"] {
+    background-color: #fff3b0;
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 
-.katex {
-    color: blue;
-}
-
-.katex-display {
-    color: blue;
+.markdown-input [data-md-type="highlight-strong"],
+#html-output [data-md-type="highlight-strong"] {
+    background-color: #ffe082;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
 }
 
 pre {
@@ -460,29 +468,6 @@ pre {
 code {
     font-family: monospace;
     font-size: 14px;
-}
-
-#sidebar {
-    padding: 15px;
-    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.category-title {
-    font-weight: 600;
-    margin: 15px 0 8px 0;
-    cursor: pointer;
-    color: #2c3e50;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: linear-gradient(145deg, #ffffff, #f0f2f5);
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
-}
-
-#sidebar {
-    background: #f5f7fa;
-    border-right: 1px solid #e3e8ee;
 }
 
 .category {
@@ -521,18 +506,6 @@ code {
 .subcategory:hover {
     background: #ebf0f5;
     border-left-color: #4fd1c5;
-    color: #2d3748;
-}
-
-.subcategory.active {
-    background: #e6f5f4;
-    border-left-color: #38b2ac;
-    color: #2d3748;
-    font-weight: 500;
-}
-
-.category-title:hover {
-    background: #ebf0f5;
     color: #2d3748;
 }
 
