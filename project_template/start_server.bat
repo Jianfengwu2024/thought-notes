@@ -16,26 +16,6 @@ if not exist server.js (
     exit /b 1
 )
 
-REM Check required npm packages
-echo Checking required npm packages...
-npm list express >nul 2>&1
-if errorlevel 1 (
-    echo Installing express...
-    npm install express
-)
-
-npm list ws >nul 2>&1
-if errorlevel 1 (
-    echo Installing ws...
-    npm install ws
-)
-
-npm list compress >nul 2>&1
-if errorlevel 1 (
-    echo Installing compress...
-    npm install compress
-)
-
 REM Check if port 3000 is available
 netstat -an | find ":3000" >nul
 if not errorlevel 1 (

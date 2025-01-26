@@ -119,14 +119,6 @@ marked.use({
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 清理所有临时存储数据
-    Object.keys(localStorage).forEach(key => {
-        // 保留必要的持久化数据
-        if (!['navWidth', 'selectedCategory'].includes(key)) {
-            localStorage.removeItem(key);
-        }
-    });
-
     const markdownInput = document.getElementById('markdown-input');
     const htmlOutput = document.getElementById('html-output');
     if (!markdownInput || !htmlOutput) {
