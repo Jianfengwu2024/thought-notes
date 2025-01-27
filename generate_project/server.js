@@ -13,7 +13,6 @@ app.get('*', (req, res) => {
 });
 app.use(express.json());
 
-// 复制文件函数
 function copyFiles(sourceDir, targetDir, files) {
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true, mode: 0o755 });
@@ -24,31 +23,21 @@ function copyFiles(sourceDir, targetDir, files) {
     files.forEach(file => {
       const sourcePath = path.join(sourceDir, file);
       const targetPath = path.join(targetDir, file);
+
+      // 添加调试输出
+      console.log(`检查文件: ${sourcePath}`);
+      
       if (fs.existsSync(sourcePath)) {
+        console.log(`文件存在，开始复制: ${sourcePath} -> ${targetPath}`);
         fs.copyFileSync(sourcePath, targetPath);
         console.log(`复制文件: ${sourcePath} -> ${targetPath}`);
       } else {
         console.warn(`源文件不存在: ${sourcePath}`);
       }
     });
-  } else {
-    // 递归复制整个目录
-    function copyRecursive(source, target) {
-      if (fs.lstatSync(source).isDirectory()) {
-        if (!fs.existsSync(target)) {
-          fs.mkdirSync(target, { recursive: true, mode: 0o755 });
-        }
-        fs.readdirSync(source).forEach(item => {
-          copyRecursive(path.join(source, item), path.join(target, item));
-        });
-      } else {
-        fs.copyFileSync(source, target);
-        console.log(`复制文件: ${source} -> ${target}`);
-      }
-    }
-    copyRecursive(sourceDir, targetDir);
-  }
+  } 
 }
+
 
 // 处理生成项目请求
 app.post('/generate', (req, res) => {
@@ -93,8 +82,7 @@ app.post('/generate', (req, res) => {
       'index.html',
       'readme.md',
       'package.json',
-      'package-lock.json',
-      'start_server.dat'
+      'start_server.bat'
     ];
     copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
 
