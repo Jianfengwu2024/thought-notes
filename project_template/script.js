@@ -118,6 +118,7 @@ marked.use({
   }]
 });
 
+// 添加页面上的监听器
 document.addEventListener('DOMContentLoaded', () => {
     const markdownInput = document.getElementById('markdown-input');
     const htmlOutput = document.getElementById('html-output');

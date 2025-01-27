@@ -267,17 +267,17 @@ app.post('/api/save', (req, res) => {
     const timestamp = new Date().toISOString().slice(0, 16).replace(/:/g, '-');
     
     // 保存HTML文件
-    const htmlFilePath = path.join(saveDir, `${cleanTitle}_${timestamp}.html`);
+    const htmlFilePath = path.join(saveDir, `${cleanTitle}.html`);
     fs.writeFileSync(htmlFilePath, content);
     
     // 保存Markdown文件
-    const mdFilePath = path.join(saveDir, `${cleanTitle}_${timestamp}.md`);
+    const mdFilePath = path.join(saveDir, `${cleanTitle}.md`);
     fs.writeFileSync(mdFilePath, markdownContent || '');
 
     // 保存到数据库
     const sql = `INSERT INTO notes (category, subcategory, title, content, markdown_content) 
                  VALUES (?, ?, ?, ?, ?)`;
-    const params = [category, subcategory, `${cleanTitle}_${timestamp}.html`, content, markdownContent];
+    const params = [category, subcategory, `${cleanTitle}.html`, content, markdownContent];
 
     db.run(sql, params, function(err) {
         if (err) {
@@ -340,14 +340,14 @@ app.post('/api/update', (req, res) => {
             .replace(/[<>:"/\\|?*]/g, '')
             .replace(/\s+/g, '_');
         const timestamp = new Date().toISOString().slice(0, 16).replace(/:/g, '-');
-        const newFilename = `${cleanTitle}_${timestamp}.html`;
+        const newFilename = `${cleanTitle}.html`;
 
         // 更新HTML文件
         const newHtmlPath = path.join(saveDir, newFilename);
         fs.writeFileSync(newHtmlPath, content);
 
         // 更新Markdown文件
-        const newMdPath = path.join(saveDir, `${cleanTitle}_${timestamp}.md`);
+        const newMdPath = path.join(saveDir, `${cleanTitle}.md`);
         fs.writeFileSync(newMdPath, markdownContent || '');
 
         // 删除旧文件

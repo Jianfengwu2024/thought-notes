@@ -1,0 +1,907 @@
+## 3 Fluctuations
+
+万物并作，吾以观复。临界乳光，散射矩阵。
+
+对称稳定，序质同源。纵横切分，涨落自由。
+
+动尺互换，物理自现。临界散射，动量凝聚。
+
+关联函数，试探分析。大小涨落，行为各异。
+
+专注相位，自发破缺。维度不同，MW定理。
+
+均值方差，路径积分。高斯二次，应用非凡。
+
+涨落修正，唯自由能。临界比热，奇点漂移。
+
+上临界四，下临界二。上外死寂，下内混沌。
+
+唯三界中，动静机变，不可穷尽，道即易也。
+
+
+enjoyi it
+
+### 3.1 Scattering and fluctuations
+
+**==万物并作，吾以观复==**: 揭示临界乳光的物理和数学
+
+In addition to bulk thermodynamic experiments, scattering measurements can be used to probe microscopic fluctuations at length scales of the order of the probe wavelength $\lambda$. In a typical set up, a beam of wavevector $\mathbf{k}_{i}$ is incident（入射） upon the sample and the scattered intensity is measured at wavevector $\mathbf{k}_{s}=$ $\mathbf{k}_{i}+\mathbf{q}$. For elastic scattering, $\left|\mathbf{k}_{i}\right|=\left|\mathbf{k}_{s}\right| \equiv k$, and $q \equiv|\mathbf{q}|=2 k \sin \theta$, **where $\theta$ is the angle between incident and scattered beams**. **此处有误，这个角度并不是入射束和反射束的夹角。而是应该如图所示：**
+
+<img src="C:\Users\吴牧之\Documents\pictures\elastic_scat.jpg" style="zoom:50%;" />
+
+Standard treatments of scattering start with the Fermi golden rule, and usually lead to a scattering amplitude of the form
+$$
+\begin{equation*}
+A(\mathbf{q}) \propto\left\langle\mathbf{k}_{s} \otimes f\right| \mathcal{U}\left|\mathbf{k}_{i} \otimes i\right\rangle \propto \sigma(\mathbf{q}) \int \mathrm{d}^{d} \mathbf{x} \mathrm{e}^{\mathrm{i} \boldsymbol{q} \cdot \mathbf{x}} \rho(\mathbf{x}) \tag{3.1}
+\end{equation*}
+$$
+
+In the above expression, $|i\rangle$ and $|f\rangle$ refer to the initial and final states of the sample, and $\mathcal{U}$ is the scattering potential that can be decomposed as a sum due to the various scattering elements in the sample. The amplitude has a local form factor $\sigma(\mathbf{q})$ describing the scattering from an individual element. **==For our purposes, the more interesting global information is contained in $\rho(\mathbf{q})$, the Fourier transform of the global density of scatterers $\rho(\mathbf{x})$.==** The appropriate scattering density depends on the nature of the probe. Light scattering senses the actual atomic density, electron scattering measures the charge density, while neutron scattering is usually used to probe the magnetization density. Most such probes actually do not respond to a snapshot of the system, but look at time averaged configurations. Thus the observed scattering intensity is
+
+$$
+\begin{equation*}
+\left.\left.\left.S(\mathbf{q}) \propto\langle | A(\mathbf{q})\right|^{2}\right\rangle\left.\propto\langle | \rho(\mathbf{q})\right|^{2}\right\rangle . \tag{3.2}
+\end{equation*}
+$$
+
+Here $\langle\bullet\rangle$ indicates the thermal average of $\bullet$, which can be used in place of the time average in most cases due to ergodicity.
+
+Equation (3.2) indicates that a uniform density only leads to forward scattering $(\mathbf{q}=\mathbf{0})$, while the long-wavelength fluctuations can be studied by working at small angles or with small $k$. If scattering is caused by the magnetization
+density, we can use the **==Landau-Ginzburg Hamiltonian==** to compute its intensity. The probability of a particular configuration is given by
+$$
+\begin{equation*}
+\mathcal{P}[\vec{m}(\mathbf{x})] \propto \exp \left\{-\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}(\nabla m)^{2}+\frac{t}{2} m^{2}+u m^{4}\right]\right\} . \tag{3.3}
+\end{equation*}
+$$
+
+Landau-Ginzburg 哈密顿量的重要之处在于，它去掉了Higgs 势能的玄学味道。从对称性（旋转和平移），以及稳定性就可以确定最重要的 ${t\over 2 }m^2 + um^4$ 形式，要使得在 $t<0$ 的时候能够有稳定解，必须有 $m^4$ 项！而 $t$ 则是序参量（$t=T-T_c$）！
+
+As discussed earlier, the most probable configuration is uniform, with $\vec{m}(\mathbf{x})=$ $\bar{m} \hat{e}_{1}$, where $\hat{e}_{1}$ is a unit vector ( $\bar{m}$ is zero for $t>0$, and equal to $\sqrt{-t / 4 u}$ for $t<0$ ). We can examine small fluctuations around such a configuration by setting
+$$
+\begin{equation*}
+\vec{m}(\mathbf{x})=\left[\bar{m}+\phi_{\ell}(\mathbf{x})\right] \hat{e}_{1}+\sum_{\alpha=2}^{n} \phi_{t, \alpha}(\mathbf{x}) \hat{e}_{\alpha} \tag{3.4}
+\end{equation*}
+$$
+
+这样的展开，和 Clebsch 参数化非常类似。
+
+where $\phi_{\ell}$ and $\phi_{t}$ refer to longitudinal and transverse fluctuations, respectively. The latter can take place along any of the $n-1$ directions perpendicular to the average magnetization.
+
+下面的分析非常物理，需要细细体会。
+
+第一步：涨落分析
+
+After the substitution of Eq. (3.4), the terms appearing in the Landau-Ginzburg Hamiltonian can be expanded to second order as
+
+$$
+\begin{aligned}
+(\nabla m)^{2} & =\left(\nabla \phi_{\ell}\right)^{2}+\left(\nabla \phi_{t}\right)^{2} \\
+m^{2} & =\bar{m}^{2}+2 \bar{m} \phi_{\ell}+\phi_{\ell}^{2}+\phi_{t}^{2} \\
+m^{4} & =\bar{m}^{4}+4 \bar{m}^{3} \phi_{\ell}+6 \bar{m}^{2} \phi_{\ell}^{2}+2 \bar{m}^{2} \phi_{t}^{2}+\mathcal{O}\left(\phi_{\ell}^{3}, \phi_{t}^{3}\right)
+\end{aligned}
+$$
+
+resulting in a quadratic energy cost
+
+第二步：涨落自由能
+$$
+\begin{gather*}
+\beta \mathcal{H} \equiv-\ln \mathcal{P}=V\left(\frac{t}{2} \bar{m}^{2}+u \bar{m}^{4}\right)+\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}\left(\nabla \phi_{\ell}\right)^{2}+\frac{t+12 u \bar{m}^{2}}{2} \phi_{\ell}^{2}\right]  \tag{3.5}\\
++\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}\left(\nabla \phi_{t}\right)^{2}+\frac{t+4 u \bar{m}^{2}}{2} \phi_{t}^{2}\right]+\mathcal{O}\left(\phi_{\ell}^{3}, \phi_{t}^{3}\right) .
+\end{gather*}
+$$
+
+第三步：横向和纵向的均匀涨落。
+
+这里用到了动量和尺度的分析
+$$
+\partial_x \leftrightarrow 1/\xi
+$$
+这对于下面的刚度常数的分析至关重要。
+
+For uniform distortions, the longitudinal and transverse restoring potentials have "stiffness（刚度） constants" given by
+$$
+\frac{K}{\xi_{\ell}^{2}} \equiv t+12 u \bar{m}^{2}=\left.\frac{\partial^{2} \Psi(m)}{\partial \phi_{\ell}^{2}}\right|_{\bar{m}}= \begin{cases}t & \text { for } t>0  \tag{3.6}\\ -2 t & \text { for } t<0\end{cases}
+$$
+
+and
+
+$$
+\frac{K}{\bar{\xi}_{t}^{2}} \equiv t+4 u \bar{m}^{2}=\left.\frac{\partial^{2} \Psi(m)}{\partial \phi_{t}^{2}}\right|_{\bar{m}}= \begin{cases}t & \text { for } t>0  \tag{3.7}\\ 0 & \text { for } t<0\end{cases}
+$$
+
+(The physical significance of the length scales $\xi_{\ell}$ and $\xi_{t}$ will soon become apparent.) Note that there is no distinction between longitudinal and transverse components for the paramagnet $(t>0)$. For the ordered magnet in $t<0$, there is no restoring force for the transverse fluctuations which correspond to the Goldstone modes discussed in the previous section.
+
+第四步：傅里叶分析。这么做的目的是推导出关联函数！从而可以分析纵向和横向的长波均匀激发模式在动量空间中的关联函数的形式。
+
+Following the change of variables to the Fourier modes, $\phi(\mathbf{x})=$ $\sum_{q} \phi_{\mathbf{q}} \mathrm{e}^{\mathrm{iq} \cdot \mathrm{x}} / \sqrt{V}$, the probability of a particular fluctuation configuration is given by
+$$
+\mathcal{P}\left[\left\{\phi_{\ell, \mathbf{q}} ; \phi_{t, \mathbf{q}}\right\}\right] \propto \prod_{\mathbf{q}} \exp \left\{-\frac{K}{2}\left(q^{2}+\xi_{\ell}^{-2}\right)\left|\phi_{\ell, \mathbf{q}}\right|^{2}\right\} \cdot \exp \left\{-\frac{K}{2}\left(q^{2}+\xi_{t}^{-2}\right)\left|\phi_{t, \mathbf{q}}\right|^{2}\right\} \tag{3.8}
+$$
+Clearly each mode behaves as a Gaussian random variable of zero mean, and the two-point correlation functions are
+$$
+\begin{equation*}
+\left\langle\phi_{\alpha, \mathbf{q}} \phi_{\beta, \mathbf{q}^{\prime}}\right\rangle=\frac{\delta_{\alpha, \beta^{\prime}} \delta_{\mathbf{q},-\mathbf{q}^{\prime}}}{K\left(q^{2}+\xi_{\alpha}^{-2}\right)}, \tag{3.9}
+\end{equation*}
+$$
+
+where the indices refer to the longitudinal, or any of the transverse components. By using a spin polarized source of neutrons, the relative orientations can be adjusted to probe either the longitudinal or the transverse correlations. **==The Lorentzian form, $S(\mathbf{q}) \propto 1 /\left(q^{2}+\xi^{-2}\right)$, usually provides an excellent fit to scattering line shapes away from the critical point. Equation (3.9)==** indicates that in the ordered phase, longitudinal scattering still gives a Lorentzian form (on top of a delta function at $\mathbf{q}=\mathbf{0}$ due to the spontaneous magnetization), while transverse scattering always grows as $1 / q^{2}$. The same power law decay is also predicted to hold at the critical point, $t=0$. Actual experimental fits yield a power law of the form
+
+$$
+\begin{equation*}
+S\left(\mathbf{q}, T=T_{c}\right) \propto \frac{1}{q^{2-\eta}}, \tag{3.10}
+\end{equation*}
+$$
+
+==with a small positive value of $\eta$.==
+
+注意，这里的 $\eta$ 实际上证明在 $T\rightarrow T_c$ 时， $q\rightarrow q^{1-{\eta\over 2}}$, 这说明在临界点处，临界特征动量 $q_c$ 附近的动量会更难偏离临界点。这说明在临界点附近，动量发生凝聚的可能性更大。
+
+![](https://cdn.mathpix.com/cropped/2024_12_27_3657433bbdebf76e536dg-048.jpg?height=326&width=946&top_left_y=1352&top_left_x=268)
+
+Fig. 3.1 The intensity of scattering by magnetic fluctuations for $t>0$ (left), and $t<0$ (right). The dashed line on the right indicates the transverse scattering intensity.
+
+**==结论：纵向长波激发不会有很大的改变，仍然是一个洛伦兹形式。但横向长波激发在临界点处偏离洛伦兹形式。相当于横向长波的关联长度 $\xi_t$ 在 $t<0$ (即临界温度以下（记住$t = T- T_c <0$）) 趋于无穷大！==** 
+
+### 3.2 Correlation functions and susceptibilities
+
+主要是要计算体磁化率
+
+We can also examine the extent of fluctuations in real space. The averages $\left\langle\phi_{\alpha}(\mathbf{x})\right\rangle=\left\langle m_{\alpha}(\mathbf{x})-\bar{m}_{\alpha}\right\rangle$, are clearly zero, and the connected correlation function is
+
+$$
+\begin{align*}
+G_{\alpha, \beta}^{c}\left(\mathbf{x}, \mathbf{x}^{\prime}\right) & \equiv\left\langle\left(m_{\alpha}(\mathbf{x})-\bar{m}_{\alpha}\right)\left(m_{\beta}\left(\mathbf{x}^{\prime}\right)-\bar{m}_{\beta}\right)\right\rangle \\
+& =\left\langle\phi_{\alpha}(\mathbf{x}) \phi_{\beta}\left(\mathbf{x}^{\prime}\right)\right\rangle=\frac{1}{V} \sum_{\mathbf{q}, \mathbf{q}^{\prime}} \mathrm{e}^{\mathrm{i} \mathbf{q} \cdot \mathbf{x}+\mathrm{i} \mathbf{q}^{\prime} \cdot \mathbf{x}^{\prime}}\left\langle\phi_{\alpha, \mathbf{q}} \phi_{\beta, \mathbf{q}^{\prime}}\right\rangle . \tag{3.11}
+\end{align*}
+$$
+
+Using Eq. (3.9), we obtain
+
+$$
+\begin{equation*}
+G_{\alpha, \beta}^{c}\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=\frac{\delta_{\alpha, \beta}}{V} \sum_{\mathbf{q}} \frac{\mathrm{e}^{\mathrm{i} \mathbf{q} \cdot\left(\mathbf{x}-\mathbf{x}^{\prime}\right)}}{K\left(q^{2}+\dot{\xi}_{\alpha}^{-2}\right)} \equiv-\frac{\delta_{\alpha, \beta}}{K} I_{d}\left(\mathbf{x}-\mathbf{x}^{\prime}, \xi_{\alpha}\right), \tag{3.12}
+\end{equation*}
+$$
+
+where in the continuum limit,
+
+$$
+\begin{equation*}
+I_{d}(\mathbf{x}, \xi)=-\int \frac{\mathrm{d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{\mathrm{e}^{\mathrm{i} \mathbf{q} \cdot \mathbf{x}}}{q^{2}+\xi^{-2}} \tag{3.13}
+\end{equation*}
+$$
+
+Alternatively, $I_{d}$ is the solution to the following differential equation
+
+$$
+\begin{equation*}
+\nabla^{2} I_{d}(x)=\int \frac{\mathrm{d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{q^{2} \mathrm{e}^{\mathrm{i} \mathbf{q} \cdot \mathbf{x}}}{q^{2}+\xi^{-2}}=\int \frac{\mathrm{d}^{d} \mathbf{q}}{(2 \pi)^{d}}\left[1-\frac{\xi^{-2}}{q^{2}+\xi^{-2}}\right] \mathrm{e}^{\mathrm{i} \boldsymbol{q} \cdot \mathbf{x}}=\delta^{d}(\mathbf{x})+\frac{I_{d}(\mathbf{x})}{\xi^{2}} . \tag{3.14}
+\end{equation*}
+$$
+
+The solution is spherically symmetric（注意，球坐标系里的拉普拉斯算子：
+$$
+\nabla^2 f = \frac{1}{r^{d-1}} \frac{d}{dr} \left( r^{d-1} \frac{df}{dr} \right)
+$$
+）, satisfying
+
+$$
+\begin{equation*}
+\frac{\mathrm{d}^{2} I_{d}}{\mathrm{~d} x^{2}}+\frac{d-1}{x} \frac{\mathrm{~d} I_{d}}{\mathrm{~d} x}=\frac{I_{d}}{\xi^{2}}+\delta^{d}(\mathbf{x}) \tag{3.15}
+\end{equation*}
+$$
+
+We can try out a solution that decays exponentially at large distances as（试探解，实际上这是因为对临界现象的势能关于距离的指数形式）
+
+$$
+\begin{equation*}
+I_{d}(x) \propto \frac{\exp (-x / \xi)}{x^{p}} \tag{3.16}
+\end{equation*}
+$$
+
+(We have anticipated the presence of a subleading power law.) The derivatives of $I_{d}$ are given by
+
+$$
+\begin{align*}
+\frac{\mathrm{d} I_{d}}{\mathrm{~d} x} & =-\left(\frac{p}{x}+\frac{1}{\xi}\right) I_{d} \\
+\frac{\mathrm{~d}^{2} I_{d}}{\mathrm{~d} x^{2}} & =\left(\frac{p(p+1)}{x^{2}}+\frac{2 p}{x \xi}+\frac{1}{\xi^{2}}\right) I_{d} \tag{3.17}
+\end{align*}
+$$
+
+For $x \neq 0$, the requirement that Eq. (3.16) satisfies Eq. (3.15) gives
+
+$$
+\begin{equation*}
+\frac{p(p+1)}{x^{2}}+\frac{2 p}{x \xi}+\frac{1}{\xi^{2}}-\frac{p(d-1)}{x^{2}}-\frac{(d-1)}{x \xi}=\frac{1}{\xi^{2}} \tag{3.18}
+\end{equation*}
+$$
+
+The choice of $\xi$ as the decay length ensures that the constant terms in the above equation cancel. The exponent $p$ is determined by requiring the next largest terms to cancel. **For $x \ll \xi$, the $1 / x^{2}$ terms are the next most important**; we must set $p(p+1)=p(d-1)$, and $p=d-2$. This is the familiar exponent for Coulomb interactions, and indeed at this length scale the correlations don't feel the presence of $\xi$. As **==demonstrated in the next section==**, the properly normalized result in this limit is
+
+$$
+\begin{equation*}
+I_{d}(x) \simeq C_{d}(x)=\frac{x^{2-d}}{(2-d) S_{d}} \quad(x \ll \xi) \tag{3.19}
+\end{equation*}
+$$
+
+$x\ll \xi$ ， 说明 $\exp(-x/\xi)\rightarrow1$.
+
+(Note that a constant term can always be added to the solution to satisfy the limits appropriate to the correlation function under study.) **At large distances $x \gg \xi$,** the $1 /(x \xi)$ term dominates Eq. (3.18), and **==its vanishing implies $p=$ $(d-1) / 2$.==** Matching to Eq. (3.19) at $x \approx \xi$ yields
+$$
+\begin{equation*}
+I_{d}(x) \simeq \frac{\xi^{(3-d) / 2}}{(2-d) S_{d} x^{(d-1) / 2}} \exp (-x / \xi) \quad(x \gg \xi) \tag{3.20}
+\end{equation*}
+$$
+
+![](https://cdn.mathpix.com/cropped/2024_12_27_3657433bbdebf76e536dg-050.jpg?height=286&width=689&top_left_y=263&top_left_x=394)
+
+From Eq. (3.12), we observe that transverse and longitudinal correlations behave differently. Close to the critical point, the longitudinal correlation length (Eq. 3.6) behaves as
+
+$$
+\xi_{\ell}= \begin{cases}t^{-1 / 2} / \sqrt{K} & \text { for } \mathrm{t}>0  \tag{3.21}\\ (-2 t)^{-1 / 2} / \sqrt{K} & \text { for } \mathrm{t}<0\end{cases}
+$$
+
+The singularities can be described by $\xi_{ \pm} \simeq \xi_{0} B_{ \pm}|t|^{-\nu_{ \pm}}$, where $\nu_{ \pm}=1 / 2$ and $B_{+} / B_{-}=\sqrt{2}$ are universal, while $\xi_{0} \propto 1 / \sqrt{K}$ is not(物质依赖). The transverse correlation length (Eq. 3.7) equals $\xi_{\ell}$ for $t>0$, and is infinite for all $t<0$.
+
+Equation (3.19) implies that right at $T_{c}$, correlations decay as $1 / x^{d-2}$. Actually, the decay exponent is usually indicated by $1 / x^{d-2+\eta}$, where $\eta$ is the same exponent introduced in Eq. (3.10). 
+
+**==Integrating the connected correlation functions results in bulk susceptibilities.==** （体磁化率=连通格林函数的积分）
+
+For example, the divergence of the longitudinal susceptibility is also obtained from,
+$$
+\begin{equation*}
+\chi_{\ell} \propto \int \mathrm{d}^{d} \mathbf{x} G_{\ell}^{c}(\mathbf{x}) \propto \int_{0}^{\xi_{\ell}} \frac{\mathrm{d}^{d} x}{x^{d-2}} \propto \xi_{\ell}^{2} \simeq A_{ \pm} t^{-1} \tag{3.22}
+\end{equation*}
+$$
+
+The universal exponents and amplitude ratios are again recovered from the above equation. For $T<T_{c}$, **==there is no upper cut-off length for transverse correlations（$\xi_t$ 在临界温度之下是无穷大）==**, and the divergence of the transverse susceptibility can be related to the system size $L$, as
+
+$$
+\begin{equation*}
+\chi_{t} \propto \int \mathrm{~d}^{d} \mathbf{x} G_{t}^{c}(\mathbf{x}) \propto \int_{0}^{L} \frac{\mathrm{~d}^{d} x}{x^{d-2}} \propto L^{2} \tag{3.23}
+\end{equation*}
+$$
+
+### 3.3 Lower critical dimension
+
+In chapter 2 we discussed how **==the breaking of a continuous symmetry is accompanied by the appearance of low energy excitations (Goldstone modes).==** These modes are easily excited by thermal fluctuations, and we may inquire about the effect of such fluctuations on the ordered phase. Let us first consider the case of a superfluid in the ordered phase, with a local order parameter (see Eq. 2.21) $\psi\left(\mathbf{x}\right)=|\psi(\mathbf{x})| \mathrm{e}^{\mathrm{i} \theta(\mathbf{x})}$. Assuming that the amplitude of the order parameter is uniform (意味着$|\psi({\mathbf x})| = \text{const.}$), the probability of a particular configuration is given by
+
+$$
+\begin{equation*}
+\mathcal{P}[\theta(\mathbf{x})] \propto \exp \left[-\frac{\bar{K}}{2} \int \mathrm{~d}^{d} \mathbf{x}(\nabla \theta)^{2}\right] . \tag{3.24}
+\end{equation*}
+$$
+
+Fig. 3.2 The decay of correlations as a function of separation, away from criticality.
+
+Alternatively, in terms of the Fourier components,
+
+$$
+\begin{equation*}
+\mathcal{P}[\theta(\mathbf{q})] \propto \exp \left[-\frac{\bar{K}}{2} \sum_{\mathbf{q}} q^{2}|\theta(\mathbf{q})|^{2}\right] \propto \prod_{\mathbf{q}} p\left(\theta_{\mathbf{q}}\right) . \tag{3.25}
+\end{equation*}
+$$
+
+Each mode $\theta_{\mathbf{q}}$ is an independent random variable with a Gaussian distribution of zero mean, and with ${ }^{1}$
+
+$$
+\begin{equation*}
+\left\langle\theta_{\mathbf{q}^{\prime}} \theta_{\mathbf{q}^{\prime}}\right\rangle=\frac{\delta_{\mathbf{q},-\mathbf{q}^{\prime}}}{\bar{K} q^{2}} \tag{3.26}
+\end{equation*}
+$$
+
+From Eq. (3.26) we can calculate the correlations in the phase $\theta(\mathbf{x})$ in real space. Clearly $\langle\theta(\mathbf{x})\rangle=0$ by symmetry, while
+
+$$
+\begin{equation*}
+\left\langle\theta(\mathbf{x}) \theta\left(\mathbf{x}^{\prime}\right)\right\rangle=\frac{1}{V} \sum_{\mathbf{q}, \mathbf{q}^{\prime}} \mathrm{e}^{\mathrm{iq} \cdot \mathbf{x}+\mathbf{q}^{\prime} \cdot \mathbf{x}^{\prime}}\left\langle\theta_{\mathbf{q}} \theta_{\mathbf{q}^{\prime}}\right\rangle=\frac{1}{V} \sum_{\mathbf{q}} \frac{\mathrm{e}^{\mathrm{iq} \cdot\left(\mathbf{x}-\mathbf{x}^{\prime}\right)}}{\bar{K} q^{2}} \tag{3.27}
+\end{equation*}
+$$
+
+In the continuum limit, the sum can be replaced by an integral $\left(\sum_{\mathbf{q}} \mapsto\right.$ $\left.V \int \mathrm{~d}^{d} \mathbf{q} /(2 \pi)^{d}\right)$, and
+
+$$
+\begin{equation*}
+\left\langle\theta(\mathbf{x}) \theta\left(\mathbf{x}^{\prime}\right)\right\rangle=\int \frac{\mathrm{d}^{d} \mathbf{q} \mathbf{q}}{(2 \pi)^{d}} \frac{\mathrm{e}^{\mathrm{i} \mathbf{q} \cdot\left(\mathbf{x}-\mathbf{x}^{\prime}\right)}}{\bar{K} q^{2}}=-\frac{C_{d}\left(\mathbf{x}-\mathbf{x}^{\prime}\right)}{\bar{K}} . \tag{3.28}
+\end{equation*}
+$$
+
+The function,
+
+$$
+\begin{equation*}
+C_{d}(\mathbf{x})=-\int \frac{\mathrm{d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{\mathrm{e}^{\mathrm{i} \mathbf{q} \cdot \mathbf{x}}}{q^{2}}, \tag{3.29}
+\end{equation*}
+$$
+
+==is the **Coulomb potential due to a unit charge at the origin in a $d$-dimensional space, since it is the solution to**==
+
+$$
+\begin{equation*}
+\nabla^{2} C_{d}(\mathbf{x})=\int \frac{\mathrm{d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{q^{2}}{q^{2}} e^{\mathrm{i} \mathbf{q} \cdot \mathbf{x}}=\delta^{d}(\mathbf{x}) \tag{3.30}
+\end{equation*}
+$$
+
+==**We can easily find a solution by using Gauss' theorem,**==
+$$
+\int \mathrm{d}^{d} x \nabla^{2} C_{d}=\oint \mathrm{d} S \cdot \nabla C_{d} .
+$$
+
+1 Note that the Fourier transform of a real field $\theta(\mathbf{x})$ is complex $\theta_{\mathbf{q}}=\theta_{\mathbf{q}, \Re}+\mathrm{i} \theta_{\mathbf{q}, \Im}$. However, the number of fields is not doubled, due to the constraint of $\theta_{-\mathbf{q}}=\theta_{\mathbf{q}}^{*}=\theta_{\mathbf{q}, \Re}-i \theta_{\mathbf{q}, \mathfrak{\Im}}$. The corresponding Gaussian weight has the generic form
+$$
+\mathcal{P}\left[\left\{\theta_{\mathbf{q}}\right\}\right] \propto \prod_{\mathbf{q}} \exp \left[-\frac{K(q)}{2} \theta_{\mathbf{q}} \theta_{-\mathbf{q}}\right]=\prod_{\mathbf{q}>0} \exp \left[-\frac{2 K(q)}{2}\left(\theta_{\mathbf{q}, \Re}^{2}+\theta_{\mathbf{q}, \Im}^{2}\right)\right] .
+$$
+
+While the first product is over all $\mathbf{q}$, the second is restricted to half of the space. There are clearly no cross correlations for differing $\mathbf{q}$, and the Gaussian variances are
+
+$$
+\left\langle\theta_{\mathbf{q}, \Re}\right\rangle=\left\langle\theta_{\mathbf{q}, \Im}^{2}\right\rangle=\frac{1}{2 K(q)},
+$$
+
+from which we can immediately construct
+
+$$
+\left\langle\theta_{\mathbf{q}} \theta_{\mp \mathbf{q}}\right\rangle=\left\langle\theta_{\mathbf{q}, \mathfrak{\Re}}^{2}\right\rangle \pm\left\langle\theta_{\mathbf{q}, \Im}^{2}\right\rangle=\frac{1 \pm 1}{2 K(q)}
+$$
+
+For a spherically symmetric solution, $\nabla C_{d}=\left(\mathrm{d} C_{d} / \mathrm{d} x\right) \hat{x}$, and the above equation（公式(3.30)） simplifies to
+
+$$
+\begin{equation*}
+\nabla^2 C_d(\mathbf x) = \delta^d(\mathbf x)\Rightarrow1=S_{d} x^{d-1} \frac{\mathrm{~d} C_{d}}{\mathrm{~d} x} \tag{3.31}
+\end{equation*}
+$$
+
+这里使用了高斯定理。
+
+where
+$$
+\begin{equation*}
+S_{d}=\frac{2 \pi^{d / 2}}{(d / 2-1)!} \tag{3.32}
+\end{equation*}
+$$
+
+i**s the total solid angle** (area of unit sphere) in $d$ dimensions. Hence
+
+$$
+\begin{equation*}
+\frac{\mathrm{d} C_{d}}{\mathrm{~d} x}=\frac{1}{S_{d} x^{d-1}} \quad \Longrightarrow \quad C_{d}(x)=\frac{x^{2-d}}{(2-d) S_{d}}+c_{0} \tag{3.33}
+\end{equation*}
+$$
+
+where $c_{0}$ is a constant of integration.
+The long distance behavior of $C_{d}(x)$ changes dramatically at $d=2$, as
+$$
+\lim _{x \rightarrow \infty} C_{d}(x)= \begin{cases}c_{0} & d>2  \tag{3.34}\\ \frac{x^{2-d}}{(2-d) S_{d}} & d<2 \\ \frac{\ln (x)}{2 \pi} & d=2\end{cases}
+$$
+
+The constant of integration can obtained by looking at
+
+$$
+\begin{equation*}
+\left\langle\left[\theta(\mathbf{x})-\theta\left(\mathbf{x}^{\prime}\right)\right]^{2}\right\rangle=2\left\langle\theta(\mathbf{x})^{2}\right\rangle-2\left\langle\theta(\mathbf{x}) \theta\left(\mathbf{x}^{\prime}\right)\right\rangle, \tag{3.35}
+\end{equation*}
+$$
+
+which goes to zero as $\mathbf{x} \rightarrow \mathbf{x}^{\prime}$. Hence,
+
+$$
+\begin{equation*}
+\left\langle\left[\theta(\mathbf{x})-\theta\left(\mathbf{x}^{\prime}\right)\right]^{2}\right\rangle=\frac{2\left(\left|\mathbf{x}-\mathbf{x}^{\prime}\right|^{2-d}-a^{2-d}\right)}{\bar{K}(2-d) S_{d}} \tag{3.36}
+\end{equation*}
+$$
+
+where $a$ is of the order of the lattice spacing.
+For $d>2$, the phase fluctuations are finite, while they become asymptotically large for $d \leq 2$. **==Since the phase is bounded by $2 \pi$, this implies that longrange order in the phase is destroyed==**. This result becomes more apparent by examining the effect of phase fluctuations on the two-point correlation function
+$$
+\begin{equation*}
+\left\langle\psi(\mathbf{x}) \psi^{*}(\mathbf{0})\right\rangle=\bar{\psi}^{2}\left\langle\mathrm{e}^{\mathrm{i}[\theta(\mathbf{x})-\theta(\mathbf{0})]}\right\rangle . \tag{3.37}
+\end{equation*}
+$$
+
+(Since amplitude fluctuations are ignored, we are in fact looking at a transverse correlation function.) **==We shall prove later on that for any collection of Gaussian distributed variables,==**
+
+$$
+\langle\exp (\alpha \theta)\rangle=\exp \left(\frac{\alpha^{2}}{2}\left\langle\theta^{2}\right\rangle\right)
+$$
+
+Taking this result for granted, we obtain
+
+$$
+\begin{equation*}
+\left\langle\psi(\mathbf{x}) \psi^{*}(0)\right\rangle=\bar{\psi}^{2} \exp \left[-\frac{1}{2}\left\langle[\theta(\mathbf{x})-\theta(\mathbf{0})]^{2}\right\rangle\right]=\bar{\psi}^{2} \exp \left[-\frac{x^{2-d}-a^{2-d}}{\bar{K}(2-d) S_{d}}\right], \tag{3.38}
+\end{equation*}
+$$
+
+and asymptotically
+
+$$
+\lim _{x \rightarrow \infty}\left\langle\psi(\mathbf{x}) \psi^{*}(\mathbf{0})\right\rangle= \begin{cases}\bar{\psi}^{2} & \text { for } d>2  \tag{3.39}\\ 0 & \text { for } d \leq 2\end{cases}
+$$
+
+The saddle point approximation to the order parameter $\bar{\psi}$ was obtained by ignoring fluctuations. The above result indicates that inclusion of phase fluctuations leads to a reduction of order in $d>2$, and its complete destruction in $d \leq 2$.
+
+The above example typifies a more general result known as the **==Mermin-Wagner theorem==**. The theorem states that **there is no spontaneous breaking of a continuous symmetry in systems with short-range interactions in dimensions $d \leq 2$.** Some corollaries to this theorem are:
+(1) The borderline dimensionality of two, known as the lower critical dimension, has to be treated carefully. As we shall demonstrate later on in the course, there is in fact a phase transition for the two-dimensional superfluid, although there is no true long-range order.
+(2) There are no Goldstone modes when the broken symmetry is discrete (e.g. for $n=1$ ). In such cases, long-range order is possible down to the lower critical dimension of $d_{\ell}=1$.
+
+### 3.4 Comparison to experiments
+
+The true test of the validity of the theoretical results comes from comparison to experiments. A rather rough table of critical exponents is provided below for a quick check:
+
+| Transition type      | Material                       | $\alpha$ | $\beta$ | $\gamma$ | $\nu$   |
+| :------------------- | :----------------------------- | :------- | :------ | :------- | :------ |
+| Ferromagnets $(n=3)$ | $\mathrm{Fe}, \mathrm{Ni}$     | -0.1     | 0.4     | 1.3      |         |
+| Superfluid $(n=2)$   | $\mathrm{He}^{4}$              | 0        | 0.3     | 1.3      | 0.7     |
+| Liquid-gas $(n=1)$   | $\mathrm{CO}_{2}, \mathrm{Xe}$ | 0.1      | 0.3     | 1.2      | 0.7     |
+| Ferroelectrics       | TGS                            | 0        | $1 / 2$ | 1        | $1 / 2$ |
+| and superconductors  |                                |          |         |          |         |
+| Mean-field theory    |                                | 0        | $1 / 2$ | 1        | $1 / 2$ |
+
+The exponents are actually known to much better accuracy than indicated in this table. The final row (mean-field theory) refers to the results obtained from the ==saddle point approximation==. They agree only with the experiments on **==ferroelectric and superconducting materials.==** The disagreement between the exponents for different values of $n$ suggests that the mean-field results are too universal, and leave out some essential dependence on $n$ (and $d$ ). How do we account for these discrepancies? The starting point of the Landau-Ginzburg Hamiltonian is sufficiently general to be trustworthy. The difficulty is in the saddle point method used in the evaluation of its partition function, as will become apparent in the following sections.
+
+### 3.5 Gaussian integrals
+
+In the previous section the energy cost of fluctuations was calculated at quadratic order. These fluctuations also modify the saddle point free energy. Before calculating this modification, we take a short (but necessary) mathematical diversion on computing Gaussian integrals.
+
+The simplest Gaussian integral involves one variable $\phi$,
+
+$$
+\begin{equation*}
+\mathcal{J}_{1}=\int_{-\infty}^{\infty} \mathrm{d} \phi \mathrm{e}^{-\frac{K}{2} \phi^{2}+h \phi}=\sqrt{\frac{2 \pi}{K}} \mathrm{e}^{\frac{h^{2}}{2 K} .} \tag{3.40}
+\end{equation*}
+$$
+
+By taking derivatives of the above expression with respect to $h$, integrals involving powers of $\phi$ are generated; e.g.
+
+$$
+\begin{align*}
+\frac{\mathrm{d}}{\mathrm{~d} h}: \int_{-\infty}^{\infty} \mathrm{d} \phi \phi \mathrm{e}^{-\frac{K}{2} \phi^{2}+h \phi} & =\sqrt{\frac{2 \pi}{K}} \mathrm{e}^{\frac{h^{2}}{2 K}} \cdot \frac{h}{K} \\
+\frac{\mathrm{~d}^{2}}{\mathrm{~d} h^{2}}: \int_{-\infty}^{\infty} \mathrm{d} \phi \phi^{2} \mathrm{e}^{-\frac{K}{2} \phi^{2}+h \phi} & =\sqrt{\frac{2 \pi}{K}} \mathrm{e}^{\frac{h^{2}}{2 K}} \cdot\left[\frac{1}{K}+\frac{h^{2}}{K^{2}}\right] \tag{3.41}
+\end{align*}
+$$
+
+If the integrand represents the probability density of the random variable $\phi$, the above integrals imply the moments $\langle\phi\rangle=h / K$, and $\left\langle\phi^{2}\right\rangle=h^{2} / K^{2}+1 / K$. The corresponding cumulants are $\langle\phi\rangle_{c}=\langle\phi\rangle=h / K$, and $\left\langle\phi^{2}\right\rangle_{c}=\left\langle\phi^{2}\right\rangle-\langle\phi\rangle^{2}=$ $1 / K$. In fact all higher order cumulants of the Gaussian distribution are zero since
+
+$$
+\begin{equation*}
+\left\langle\mathrm{e}^{-\mathrm{i} k \phi}\right\rangle \equiv \exp \left[\sum_{\ell=1}^{\infty} \frac{(-\mathrm{i} k)^{\ell}}{\ell!}\left\langle\phi^{\ell}\right\rangle_{c}\right]=\exp \left[-\mathrm{i} k h-\frac{k^{2}}{2 K}\right] \tag{3.42}
+\end{equation*}
+$$
+
+这个等式涉及到统计力学中的特征函数和累积量（cumulants）的概念。我们可以通过特征函数的展开和累积量的性质来理解这个等式。
+
+1. **特征函数**：对于一个随机变量 $\phi$，其特征函数定义为：
+
+   $$
+   \left\langle e^{-\mathrm{i} k \phi} \right\rangle
+   $$
+
+   这是 $\phi$ 的概率分布的傅里叶变换。
+
+2. **累积量展开**：特征函数可以用累积量展开表示为：
+
+   $$
+   \left\langle e^{-\mathrm{i} k \phi} \right\rangle = \exp \left[ \sum_{\ell=1}^{\infty} \frac{(-\mathrm{i} k)^{\ell}}{\ell!} \left\langle \phi^{\ell} \right\rangle_c \right]
+   $$
+
+   其中，$\left\langle \phi^{\ell} \right\rangle_c$ 是 $\phi$ 的第 $\ell$ 阶累积量。
+   
+   这个展开是基于累积量生成函数的性质。累积量生成函数是一个非常有用的工具，用于描述随机变量的分布特性，特别是在处理正态分布时。
+   
+   ##### 累积量生成函数
+   
+   对于一个随机变量 $\phi$，其累积量生成函数 $K(t)$ 定义为：
+   
+   $$
+   K(t) = \log \left\langle e^{t \phi} \right\rangle
+   $$
+   
+   累积量生成函数的性质是，它的导数在 $t=0$ 处给出累积量：
+   
+   - 第一阶导数给出第一阶累积量（均值）：$K'(0) = \left\langle \phi \right\rangle_c$
+   - 第二阶导数给出第二阶累积量（方差）：$K''(0) = \left\langle \phi^2 \right\rangle_c$
+   - 高阶导数给出高阶累积量
+   
+   ##### 正态分布的特性
+   
+   对于正态分布，累积量生成函数的形式非常简单，因为正态分布的所有高阶累积量（$\ell \geq 3$）都为零。这意味着：
+   
+   $$
+   K(t) = \left\langle \phi \right\rangle_c t + \frac{1}{2} \left\langle \phi^2 \right\rangle_c t^2
+   $$
+   
+   因此，特征函数可以写为：
+   
+   $$
+   \left\langle e^{t \phi} \right\rangle = \exp \left( K(t) \right) = \exp \left( \left\langle \phi \right\rangle_c t + \frac{1}{2} \left\langle \phi^2 \right\rangle_c t^2 \right)
+   $$
+   
+   对于正态分布，特征函数的展开只需要考虑到二阶累积量，因为高阶累积量为零。这个性质使得正态分布在统计分析中非常简洁和有用。
+
+假设 $\phi$ 是一个正态分布的随机变量，其均值为 $h$，方差为 $K$。对于正态分布，累积量的性质如下：
+
+- **第一阶累积量**：$\left\langle \phi \right\rangle_c = h$
+- **第二阶累积量**：$\left\langle \phi^2 \right\rangle_c = K$
+- **高阶累积量**：对于 $\ell \geq 3$，$\left\langle \phi^{\ell} \right\rangle_c = 0$
+
+因此，特征函数的累积量展开可以简化为：
+
+$$
+\exp \left[ \sum_{\ell=1}^{\infty} \frac{(-\mathrm{i} k)^{\ell}}{\ell!} \left\langle \phi^{\ell} \right\rangle_c \right] = \exp \left[ -\mathrm{i} k \left\langle \phi \right\rangle_c - \frac{k^2}{2} \left\langle \phi^2 \right\rangle_c \right]
+$$
+
+代入累积量的值：
+
+$$
+= \exp \left[ -\mathrm{i} k h - \frac{k^2}{2} K \right]
+$$
+
+这个等式表明，对于正态分布的随机变量，其特征函数可以通过均值和方差的累积量来表示。由于高阶累积量为零，特征函数的展开只包含到二阶项。这是正态分布的一个重要性质，反映了其完全由均值和方差决定。
+
+Now consider the following Gaussian integral involving $N$ variables,
+$$
+\begin{equation*}
+\mathcal{J}_{N}=\int_{-\infty}^{\infty} \prod_{i=1}^{N} \mathrm{~d} \phi_{i} \exp \left[-\sum_{i, j} \frac{K_{i, j}}{2} \phi_{i} \phi_{j}+\sum_{i} h_{i} \phi_{i}\right] . \tag{3.43}
+\end{equation*}
+$$
+
+It can be reduced to a product of $N$ one-dimensional integrals by diagonalizing the matrix $\mathbf{K} \equiv K_{i, j}$. Since we need only consider symmetric matrices ( $K_{i, j}=$ $K_{j, i}$ ), the eigenvalues are real, and the eigenvectors can be made orthonormal. Let us denote the eigenvectors and eigenvalues of $\mathbf{K}$ by $\hat{q}$ and $K_{q}$, respectively,
+i.e. $\mathbf{K} \hat{q}=K_{q} \hat{q}$. The vectors $\{\hat{q}\}$ form a new coordinate basis in the original $N$-dimensional space. Any point in this space can be represented either by coordinates $\left\{\phi_{i}\right\}$, or $\left\{\tilde{\phi}_{q}\right\}$ with $\phi_{i}=\sum_{q} \tilde{\phi}_{q} \hat{q}_{i}$. We can now change the integration variables from $\left\{\phi_{i}\right\}$ to $\left\{\tilde{\phi}_{q}\right\}$. The Jacobian associated with this unitary transformation is unity, and
+$$
+\begin{equation*}
+\mathcal{J}_{N}=\prod_{q=1}^{N} \int_{-\infty}^{\infty} \mathrm{d} \tilde{\phi}_{q} \exp \left[-\frac{K_{q}}{2} \tilde{\phi}_{q}^{2}+\tilde{h}_{q} \tilde{\phi}_{q}\right]=\prod_{q=1}^{N} \sqrt{\frac{2 \pi}{K_{q}}} \exp \left[\frac{\tilde{h}_{q} K_{q}^{-1} \tilde{h}_{q}}{2}\right] . \tag{3.44}
+\end{equation*}
+$$
+
+The final expression can be represented in terms of the original coordinates by using the inverse matrix $\mathbf{K}^{-1}$, such that $\mathbf{K}^{-1} \mathbf{K}=\mathbf{1}$. Since the determinant of the matrix is independent of the choice of basis, $\operatorname{det} \mathbf{K}=\prod_{q} K_{q}$, and
+
+$$
+\begin{equation*}
+\mathcal{J}_{N}=\sqrt{\frac{(2 \pi)^{N}}{\operatorname{det} \mathbf{K}}} \exp \left[\sum_{i, j} \frac{K_{i, j}^{-1}}{2} h_{i} h_{j}\right] . \tag{3.45}
+\end{equation*}
+$$
+
+Regarding $\left\{\phi_{i}\right\}$ as Gaussian random variable distributed with a joint probability distribution function proportional to the integrand of Eq. (3.43), the joint characteristic function is given by
+
+$$
+\begin{equation*}
+\left\langle\mathrm{e}^{-\mathrm{i} \sum_{j} k_{j} \phi_{j}}\right\rangle=\exp \left[-\mathrm{i} \sum_{i, j} K_{i, j}^{-1} h_{i} k_{j}-\sum_{i, j} \frac{K_{i, j}^{-1}}{2} k_{i} k_{j}\right] . \tag{3.46}
+\end{equation*}
+$$
+
+Moments of the distribution are obtained from derivatives of the characteristic function with respect to $k_{i}$, and cumulants from derivatives of its logarithm. Hence, Eq. (3.46) implies
+
+$$
+\left\{\begin{array}{l}
+\left\langle\phi_{i}\right\rangle_{c}=\sum_{j} K_{i, j}^{-1} h_{j}  \tag{3.47}\\
+\left\langle\phi_{i} \phi_{j}\right\rangle_{c}=K_{i, j}^{-1} .
+\end{array}\right.
+$$
+
+Another useful form of Eq. (3.46) is
+
+$$
+\begin{equation*}
+\langle\exp (A)\rangle=\exp \left[\langle A\rangle_{c}+\frac{1}{2}\left\langle A^{2}\right\rangle_{c}\right], \tag{3.48}
+\end{equation*}
+$$
+
+==where $A=\sum_{i} a_{i} \phi_{i}$ is any linear combination of Gaussian distributed variables==. We used this result earlier in computing the order parameter correlations in the presence of phase fluctuations in a superfluid.
+
+Gaussian functional integrals are a limiting case of the above many variable integrals. Consider the points $i$ as the sites of a $d$-dimensional lattice and let the spacing go to zero. In the continuum limit, $\left\{\phi_{i}\right\}$ go over to a function $\phi(\mathbf{x})$, and the matrix $K_{i j}$ is replaced by a kernel $K\left(\mathbf{x}, \mathbf{x}^{\prime}\right)$. The natural generalization of Eq. (3.45) is
+
+$$
+\begin{gather*}
+\int_{-\infty}^{\infty} \mathcal{D} \phi(\mathbf{x}) \exp \left[-\int \mathrm{d}^{d} \mathbf{x d}^{d} \mathbf{x}^{\prime} \frac{K\left(\mathbf{x}, \mathbf{x}^{\prime}\right)}{2} \phi(\mathbf{x}) \phi\left(\mathbf{x}^{\prime}\right)+\int \mathrm{d}^{d} \mathbf{x} h(\mathbf{x}) \phi(\mathbf{x})\right] \\
+\propto(\operatorname{det} \mathbf{K})^{-1 / 2} \exp \left[\int \mathrm{~d}^{d} \mathbf{x d}^{d} \mathbf{x}^{\prime} \frac{K^{-1}\left(\mathbf{x}, \mathbf{x}^{\prime}\right)}{2} h(\mathbf{x}) h\left(\mathbf{x}^{\prime}\right)\right], \tag{3.49}
+\end{gather*}
+$$
+
+where the inverse kernel $K^{-1}\left(\mathbf{x}, \mathbf{x}^{\prime}\right)$ satisfies
+
+$$
+\begin{equation*}
+\int \mathrm{d}^{d} \mathbf{x}^{\prime} K\left(\mathbf{x}, \mathbf{x}^{\prime}\right) K^{-1}\left(\mathbf{x}^{\prime}, \mathbf{x}^{\prime \prime}\right)=\delta^{d}\left(\mathbf{x}-\mathbf{x}^{\prime \prime}\right) \tag{3.50}
+\end{equation*}
+$$
+
+The notation $\mathcal{D} \phi(\mathbf{x})$ is used to denote the functional integral. There is a constant of proportionality, $(2 \pi)^{N / 2}$, left out of Eq. (3.49). Although formally infinite in the continuum limit of $N \rightarrow \infty$, it does not affect the averages that are obtained as derivatives of such integrals. In particular, for Gaussian distributed functions, Eq. (3.47) generalizes to
+
+$$
+\begin{cases}\langle\phi(\mathbf{x})\rangle_{c} & =\int \mathrm{d}^{d} \mathbf{x}^{\prime} K^{-1}\left(\mathbf{x}, \mathbf{x}^{\prime}\right) h\left(\mathbf{x}^{\prime}\right)  \tag{3.51}\\ \left\langle\phi(\mathbf{x}) \phi\left(\mathbf{x}^{\prime}\right)\right\rangle_{c} & =K^{-1}\left(\mathbf{x}, \mathbf{x}^{\prime}\right)\end{cases}
+$$
+
+In dealing with small fluctuations to the Landau-Ginzburg Hamiltonian, we encountered the quadratic form
+
+$$
+\begin{equation*}
+\int \mathrm{d}^{d} \mathbf{x}\left[(\nabla \phi)^{2}+\phi^{2} / \xi^{2}\right] \equiv \int \mathrm{d}^{d} \mathbf{x d}^{d} \mathbf{x}^{\prime} \phi\left(\mathbf{x}^{\prime}\right) \delta^{d}\left(\mathbf{x}-\mathbf{x}^{\prime}\right)\left(-\nabla^{2}+\xi^{-2}\right) \phi(\mathbf{x}) \tag{3.52}
+\end{equation*}
+$$
+
+which implies the kernel
+
+$$
+\begin{equation*}
+K\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=K \delta^{d}\left(\mathbf{x}-\mathbf{x}^{\prime}\right)\left(-\nabla^{2}+\xi^{-2}\right) \tag{3.53}
+\end{equation*}
+$$
+
+Following Eq. (3.50), the inverse kernel satisfies
+
+$$
+\begin{equation*}
+K \int \mathrm{~d}^{d} \mathbf{x}^{\prime \prime} \delta^{d}\left(\mathbf{x}-\mathbf{x}^{\prime \prime}\right)\left(-\nabla^{2}+\xi^{-2}\right) K^{-1}\left(\mathbf{x}^{\prime \prime}-\mathbf{x}^{\prime}\right)=\delta^{d}\left(\mathbf{x}^{\prime}-\mathbf{x}\right) \tag{3.54}
+\end{equation*}
+$$
+
+which implies the differential equation
+
+$$
+\begin{equation*}
+K\left(-\nabla^{2}+\xi^{-2}\right) K^{-1}(\mathbf{x})=\delta^{d}(\mathbf{x}) \tag{3.55}
+\end{equation*}
+$$
+
+Comparing with Eq. (3.14) indicates $K^{-1}(\mathbf{x})=\langle\phi(\mathbf{x}) \phi(\mathbf{0})\rangle=-I_{d}(\mathbf{x}) / K$, as obtained before by a less direct method.
+
+### 3.6 Fluctuation corrections to the saddle point
+
+We can now examine how fluctuations around the saddle point solution modify the free energy, and other macroscopic properties. Starting with Eq. (3.5), the partition function including small fluctuations is
+
+$$
+\begin{align*}
+& Z \approx \exp \left[-V\left(\frac{t}{2} \bar{m}^{2}+u \bar{m}^{4}\right)\right] \int \mathcal{D} \phi_{\ell}(\mathbf{x}) \exp \left\{-\frac{K}{2} \int \mathrm{~d}^{d} \mathbf{x}\left[\left(\nabla \phi_{\ell}\right)^{2}+\frac{\phi_{\ell}^{2}}{\xi_{\ell}^{2}}\right]\right\} \\
+& \cdot \int \mathcal{D} \phi_{t}(\mathbf{x}) \exp \left\{-\frac{K}{2} \int \mathrm{~d}^{d} \mathbf{x}\left[\left(\nabla \phi_{t}\right)^{2}+\frac{\phi_{t}^{2}}{\xi_{t}^{2}}\right]\right\} \tag{3.56}
+\end{align*}
+$$
+
+Each of the Gaussian kernels is diagonalized by the Fourier transforms
+
+$$
+\tilde{\phi}(\mathbf{q})=\int \mathrm{d}^{d} \mathbf{x} \exp (-\mathrm{iq} \cdot \mathbf{x}) \phi(\mathbf{x}) / \sqrt{V}
+$$
+
+and with corresponding eigenvalues $K(\mathbf{q})=K\left(q^{2}+\xi^{-2}\right)$. The resulting determinant of $\mathbf{K}$ is a product of such eigenvalues, and hence
+
+$$
+\begin{equation*}
+\ln \operatorname{det} \mathbf{K}=\sum_{\mathbf{q}} \ln K(\mathbf{q})=V \int \frac{\mathrm{~d}^{d} \mathbf{q}}{(2 \pi)^{d}} \ln \left[K\left(q^{2}+\xi^{-2}\right)\right] . \tag{3.57}
+\end{equation*}
+$$
+
+The free energy resulting from Eq. (3.56) is then given by
+
+$$
+\begin{align*}
+\beta f= & -\frac{\ln Z}{V}=\frac{t \bar{m}^{2}}{2}+u \bar{m}^{4}+\frac{1}{2} \int \frac{\mathrm{~d}^{d} \mathbf{q}}{(2 \pi)^{d}} \ln \left[K\left(q^{2}+\xi_{\ell}^{-2}\right)\right]  \tag{3.58}\\
+& +\frac{n-1}{2} \int \frac{\mathrm{~d}^{d} \mathbf{q}}{(2 \pi)^{d}} \ln \left[K\left(q^{2}+\xi_{t}^{-2}\right)\right] .
+\end{align*}
+$$
+
+(Note that there are $n-1$ transverse components.) Using the dependence of the correlation lengths on reduced temperature, **the singular part of the heat capacity is obtained as**
+
+$$
+C_{\text {singular }} \propto-\frac{\partial^{2}(\beta f)}{\partial^{2} t}= \begin{cases}0+\frac{n}{2} \int \frac{\mathrm{~d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{1}{\left(K q^{2}+t\right)^{2}} & \text { for } t>0  \tag{3.59}\\ \frac{1}{8 u}+2 \int \frac{\mathrm{~d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{1}{\left(K q^{2}-2 t\right)^{2}} & \text { for } t<0 .\end{cases}
+$$
+
+注意，在 $t\rightarrow 0$ 时，即临界点处，存在一个gap 。
+
+The correction terms are proportional to
+$$
+\begin{equation*}
+C_{F}=\frac{1}{K^{2}} \int \frac{\mathrm{~d}^{d} \mathbf{q}}{(2 \pi)^{d}} \frac{1}{\left(q^{2}+\xi^{-2}\right)^{2}} . \tag{3.60}
+\end{equation*}
+$$
+
+The integral has dimensions of (length) ${ }^{4-d}$, and changes behavior at $d=4$. For $d>4$ the integral diverges at large $\mathbf{q}$, and is dominated by the upper cutoff $\Lambda \simeq 1 / a$, where $a$ is the lattice spacing. For $d<4$, the integral is convergent in both limits. It can be made dimensionless by rescaling $\mathbf{q}$ by $\xi^{-1}$, and is hence proportional to $\xi^{4-d}$. **Therefore**
+
+$$
+C_{F} \simeq \frac{1}{K^{2}} \begin{cases}a^{4-d} & \text { for } d>4  \tag{3.61}\\ \xi^{4-d} & \text { for } d<4\end{cases}
+$$
+
+Fig. 3.3 The saddle point heat capacity (solid line), plus the corrections due to Gaussian fluctuations (dashed lines). The corrections simply modify the discontinuity in dimensions $d>4$ (left), but are divergent in $d \leq 4$ (right).
+![](https://cdn.mathpix.com/cropped/2024_12_27_3657433bbdebf76e536dg-057.jpg?height=327&width=563&top_left_y=1860&top_left_x=1096)
+
+In dimensions $d>4$, fluctuation corrections to the heat capacity add a constant term to the background on each side of the transition. However, the primary form of the singularity, a discontinuity in $C$, is not changed. For $d<4$, the divergence of $\xi \propto t^{-1 / 2}$, at the transition leads to a correction term from Eq. (3.61) which is more important than the original discontinuity. Indeed, the correction term corresponds to an exponent $\alpha=(4-d) / 2$. However, this is only the first correction to the saddle point result. The divergence of $C_{F}$ merely implies that the saddle point conclusions are no longer reliable in dimensions $d \leq 4$, below the so-called upper critical dimension. Although we obtained this dimension by looking at the fluctuation corrections to the heat capacity, we would have reached the same conclusion in examining the singular part of any other quantity, such as magnetization or susceptibility. **==The contributions due to fluctuations always modify the leading singular behavior, and hence the critical exponents, in dimensions $d \leq 4$.==**
+
+### 3.7 The Ginzburg criterion
+
+We have thus established the importance of fluctuations, and identified them as the probable reason for the failure of the saddle point approximation to correctly describe the observed exponents. However, as noted earlier, there are some materials, such as superconductors, in which the experimental results are well fitted to the singular forms predicted by this approximation. **==Can we quantify why fluctuations are less important in superconductors than in other phase transitions?==**
+
+Equation (3.61) indicates that fluctuation corrections become important due to the divergence of the correlation length. Within the saddle point approximation, **==the correlation length diverges as $\xi \approx \xi_{0}|t|^{-1 / 2}$, where $t=\left(T_{c}-T\right) / T_{c}$ is the reduced temperature, and $\xi_{0} \approx \sqrt{K}$ is a microscopic length scale. In principle, $\xi_{0}$ can be measured experimentally from fitting scattering line shapes.==** It has to approximately equal the size of the units that undergo ordering at the phase transition. For the liquid-gas transition, $\xi_{0}$ can be estimated as $\left(v_{c}\right)^{1 / 3}$, where $v_{c}$ is the critical atomic volume. In superfluids, $\xi_{0}$ is approximately the thermal wavelength $\lambda(T)$. Both these estimates are of the order of a few atomic spacings, $1-10 \AA$. On the other hand, the underlying unit for superconductors is a Cooper pair. The paired electrons are forced apart by their Coulomb repulsion, resulting in a relatively large separation of $\xi_{0} \approx 10^{3} \AA$.
+
+超流或气液相变，特征微观长度：$1-10 \AA$.  
+
+超导，特征微观长度 $\xi_{0} \approx 10^{3} \AA$.
+
+The importance of fluctuations can be gauged by comparing the two terms in Eq. (3.59); the saddle point discontinuity $\Delta C_{\mathrm{SP}} \propto 1 / u$, and the correction term $C_{F}$. Since $K \propto \xi_{0}^{2}$, the correction term is proportional to $\xi_{0}^{-d} t^{-(4-d) / 2}$ （见3.61）. Thus fluctuations are important provided,
+
+$$
+\begin{equation*}
+\xi_{0}^{-d} t^{-\frac{4-d}{2}} \gg \Delta C_{S P} \quad \Longrightarrow \quad|t| \ll t_{G} \simeq \frac{1}{\left(\xi_{0}^{d} \Delta C_{S P}\right)^{\frac{2}{4-d}}} \tag{3.62}
+\end{equation*}
+$$
+
+当鞍点近似的比热容在临界点处的不连续能够被涨落修正cover掉时，涨落修正变得重要，它会使得相变临界量发生漂移。
+
+The above requirement is known as the Ginzburg criterion. Naturally in $d<4$, the inequality is satisfied sufficiently close to the critical point. However, the resolution of the experiment may not be good enough to get closer than the Ginzburg reduced temperature $t_{G}$. If so, the apparent singularities at reduced temperatures $t>t_{G}$ may show saddle point behavior. It is this apparent discontinuity that then appears in Eq. (3.62), and may be used to self-consistently estimate $t_{G}$. **==Clearly, $\Delta C_{S P}$ and $\xi_{0}$ can both be measured in dimensionless units==**; $\xi_{0}$ in units of atomic size $a$, and $\Delta C_{S P}$ in units of $N k_{\mathrm{B}}$. (玻尔兹曼常数 $
+k_{\mathrm B} = 1.380649 \times 10^{-23} \, \text{J/K} 
+$ )  **==The latter is of the order of unity for most transitions==**, and thus $t_{G} \approx \xi_{0}^{-6}$ in $d=3$. In cases where $\xi_{0}$ is a few atomic spacings, a resolution of $t_{G} \approx 10^{-1}-10^{-2}$ will suffice. However, in superconductors with $\xi_{0} \approx 10^{3} a$, a resolution of $t_{G}<10^{-18}$ is necessary to see any fluctuation effects. This is much beyond the ability of current apparatus. The newer ceramic（陶瓷） high-temperature superconductors have a much smaller coherence length of $\xi_{0} \approx 10 a$, and they indeed show some effects of fluctuations.
+
+Again, it is worth emphasizing that a similar criterion could have been obtained by examining any other quantity. Fluctuations corrections become important in measurement of a quantity $X$ for $t \ll t_{G}(X) \simeq A(X) \xi_{0}^{-2 d /(4-d)}$. However, the coefficient $A(X)$ may be different (by one or two orders of magnitude) for different quantities. So, **==it is in principle possible to observe saddle point behavior in one quantity, while fluctuations are important in another quantity measured at the same resolution. Of course, fluctuations will always become important at sufficiently high resolutions.==**
+
+A summary of the results obtained so far from the Landau-Ginzburg approach is as follows:
+
+- **==For dimensions $d$ greater than an upper critical dimension of $d_{u}=4$, the saddle point approximation is valid, and singular behavior at the critical point is described by exponents $\alpha=0, \beta=1 / 2, \gamma=1, \nu=1 / 2$, and $\eta=0$.==**
+- **==For $d$ less than a lower critical dimension ( $d_{\ell}=2$ for continuous symmetry, and $d_{\ell}=1$ for discrete symmetry) fluctuations are strong enough to destroy the ordered phase.==**
+- **==In the intermediate dimensions, $d_{\ell} \leq d \leq d_{u}$, fluctuations are strong enough to change the saddle point results, but not sufficiently dominant to completely destroy order. Unfortunately, or happily, this is the case of interest to us in $d=3$.==**
+
+
+## Problems for chapter 3
+
+1. Spin waves: In the XY model of $n=2$ magnetism, a unit vector $\vec{s}=\left(s_{x}, s_{y}\right)$ (with $s_{x}^{2}+s_{y}^{2}=1$ ) is placed on each site of a $d$-dimensional lattice. There is an interaction that tends to keep nearest-neighbors parallel, i.e. a Hamiltonian
+
+$$
+-\beta \mathcal{H}=K \sum_{\langle i j\rangle} \vec{s}_{i} \cdot \vec{s}_{j}
+$$
+
+The notation $\langle i j\rangle$ is conventionally used to indicate summing over all nearestneighbor pairs $(i, j)$.
+(a) Rewrite the partition function $Z=\int \prod_{i} \mathrm{~d} \vec{s}_{i} \exp (-\beta \mathcal{H})$, as an integral over the set of angles $\left\{\theta_{i}\right\}$ between the spins $\left\{\vec{s}_{i}\right\}$ and some arbitrary axis.
+(b) At low temperatures $(K \gg 1)$, the angles $\left\{\theta_{i}\right\}$ vary slowly from site to site. In this case expand $-\beta \mathcal{H}$ to get a quadratic form in $\left\{\theta_{i}\right\}$.
+(c) For $d=1$, consider $L$ sites with periodic boundary conditions (i.e. forming a closed chain). Find the normal modes $\theta_{q}$ that diagonalize the quadratic form (by Fourier transformation), and the corresponding eigenvalues $K(q)$. Pay careful attention to whether the modes are real or complex, and to the allowed values of $q$.
+(d) Generalize the results from the previous part to a $d$-dimensional simple cubic lattice with periodic boundary conditions.
+(e) Calculate the contribution of these modes to the free energy and heat capacity. (Evaluate the classical partition function, i.e. do not quantize the modes.)
+(f) Find an expression for $\left\langle\vec{s}_{0} \cdot \vec{s}_{\mathbf{x}}\right\rangle=\mathfrak{R}\left\langle\exp \left[\mathrm{i} \theta_{\mathbf{x}}-i \theta_{0}\right]\right\rangle$ by adding contributions from different Fourier modes. Convince yourself that for $|\mathbf{x}| \rightarrow \infty$, only $\mathbf{q} \rightarrow \mathbf{0}$ modes contribute appreciably to this expression, and hence calculate the asymptotic limit.
+(g) Calculate the transverse susceptibility from $\chi_{t} \propto \int \mathrm{~d}^{d} \mathbf{x}\left\langle\vec{s}_{0} \cdot \vec{s}_{\mathbf{x}}\right\rangle_{c}$. How does it depend on the system size $L$ ?
+(h) In $d=2$, show that $\chi_{t}$ only diverges for $K$ larger than a critical value $K_{c}=$ $1 /(4 \pi)$.
+
+2. Capillary waves: A reasonably flat surface in $d$-dimensions can be described by its height $h$, as a function of the remaining $(d-1)$ coordinates $\mathbf{x}=$ $\left(x_{1}, \ldots x_{d-1}\right)$. Convince yourself that the generalized "area" is given by $\mathcal{A}=$ $\int \mathrm{d}^{d-1} \mathbf{x} \sqrt{1+(\nabla h)^{2}}$. With a surface tension $\sigma$, the Hamiltonian is simply $\mathcal{H}=\sigma \mathcal{A}$.
+   (a) At sufficiently low temperatures, there are only slow variations in $h$. Expand the energy to quadratic order, and write down the partition function as a functional integral.
+   (b) Use Fourier transformation to diagonalize the quadratic Hamiltonian into its normal modes $\left\{h_{\mathbf{q}}\right\}$ (capillary waves).
+   (c) What symmetry breaking is responsible for these Goldstone modes?
+   (d) Calculate the height-height correlations $\left\langle\left(h(\mathbf{x})-h\left(\mathbf{x}^{\prime}\right)\right)^{2}\right\rangle$.
+   (e) Comment on the form of the result (d) in dimensions $d=4,3,2$, and 1.
+   (f) By estimating typical values of $\nabla h$, comment on when it is justified to ignore higher order terms in the expansion for $\mathcal{A}$.
+3. Gauge fluctuations in superconductors: The Landau-Ginzburg model of superconductivity describes a complex superconducting order parameter $\Psi(\mathbf{x})=\Psi_{1}(\mathbf{x})+$
+   $\mathrm{i} \Psi_{2}(\mathbf{x})$, and the electromagnetic vector potential $\vec{A}(\mathbf{x})$, which are subject to a Hamiltonian
+
+$$
+\beta \mathcal{H}=\int \mathrm{d}^{3} \mathbf{x}\left[\frac{t}{2}|\Psi|^{2}+u|\Psi|^{4}+\frac{K}{2} D_{\mu} \Psi D_{\mu}^{*} \Psi^{*}+\frac{L}{2}(\nabla \times A)^{2}\right] .
+$$
+
+The gauge-invariant derivative $D_{\mu} \equiv \partial_{\mu}-\mathrm{i} e A_{\mu}(\mathbf{x})$, introduces the coupling between the two fields. (In terms of Cooper pair parameters, $e=e^{*} c / \hbar, K=\hbar^{2} / 2 m^{*}$.)
+(a) Show that the above Hamiltonian is invariant under the local gauge symmetry:
+
+$$
+\Psi(\mathbf{x}) \mapsto \Psi(x) \exp (\mathrm{i} \theta(\mathbf{x})), \quad \text { and } \quad A_{\mu}(\mathbf{x}) \mapsto A_{\mu}(\mathbf{x})+\frac{1}{e} \partial_{\mu} \theta
+$$
+
+(b) Show that there is a saddle point solution of the form $\Psi(\mathbf{x})=\bar{\Psi}$, and $\vec{A}(\mathbf{x})=0$, and find $\bar{\Psi}$ for $t>0$ and $t<0$.
+(c) For $t<0$, calculate the cost of fluctuations by setting
+
+$$
+\left\{\begin{array}{l}
+\Psi(\mathbf{x})=(\bar{\Psi}+\phi(\mathbf{x})) \exp (\mathrm{i} \theta(\mathbf{x})) \\
+A_{\mu}(\mathbf{x})=a_{\mu}(\mathbf{x}) \quad\left(\text { with } \partial_{\mu} a_{\mu}=0 \text { in the Coulomb gauge }\right)
+\end{array}\right.
+$$
+
+and expanding $\beta \mathcal{H}$ to quadratic order in $\phi, \theta$, and $\vec{a}$.
+(d) Perform a Fourier transformation, and calculate the expectation values of $\left.\left.\left.\langle | \phi(\mathbf{q})\right|^{2}\right\rangle,\left.\langle | \theta(\mathbf{q})\right|^{2}\right\rangle$, and $\left.\left.\langle | \vec{a}(\mathbf{q})\right|^{2}\right\rangle$.
+
+4. Fluctuations around a tricritical point: As shown in a previous problem, the Hamiltonian
+
+$$
+\beta \mathcal{H}=\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}(\nabla m)^{2}+\frac{t}{2} m^{2}+u m^{4}+v m^{6}\right]
+$$
+
+with $u=0$ and $v>0$ describes a tricritical point.
+(a) Calculate the heat capacity singularity as $t \rightarrow 0$ by the saddle point approximation.
+(b) Include both longitudinal and transverse fluctuations by setting
+
+$$
+\vec{m}(\mathbf{x})=\left(\bar{m}+\phi_{\ell}(\mathbf{x})\right) \hat{e}_{\ell}+\sum_{\alpha=2}^{n} \phi_{t}^{\alpha}(\mathbf{x}) \hat{e}_{\alpha}
+$$
+
+and expanding $\beta \mathcal{H}$ to quadratic order in $\phi$.
+(c) Calculate the longitudinal and transverse correlation functions.
+(d) Compute the first correction to the saddle point free energy from fluctuations.
+(e) Find the fluctuation correction to the heat capacity.
+(f) By comparing the results from parts (a) and (e) for $t<0$ obtain a Ginzburg criterion, and the upper critical dimension for validity of mean-field theory at a tricritical point.
+(g) A generalized multicritical point is described by replacing the term $v m^{6}$ with $u_{2 n} m^{2 n}$. Use simple power counting to find the upper critical dimension of this multicritical point.
+
+5. Coupling to a "massless" field: Consider an $n$-component vector field $\vec{m}(\mathbf{x})$ coupled to a scalar field $A(\mathbf{x})$, through the effective Hamiltonian
+
+$$
+\beta \mathcal{H}=\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}(\nabla \vec{m})^{2}+\frac{t}{2} \vec{m}^{2}+u\left(\vec{m}^{2}\right)^{2}+e^{2} \vec{m}^{2} A^{2}+\frac{L}{2}(\nabla A)^{2}\right],
+$$
+
+with $K, L$, and $u$ positive.
+(a) Show that there is a saddle point solution of the form $\vec{m}(\mathbf{x})=\bar{m} \hat{e}_{\ell}$ and $A(x)=0$, and find $\bar{m}$ for $t>0$ and $t<0$.
+(b) Sketch the heat capacity $C=\partial^{2} \ln Z / \partial t^{2}$, and discuss its singularity as $t \rightarrow 0$ in the saddle point approximation.
+(c) Include fluctuations by setting
+
+$$
+\left\{\begin{array}{l}
+\vec{m}(\mathbf{x})=\left(\bar{m}+\phi_{\ell}(\mathbf{x})\right) \hat{e}_{\ell}+\phi_{t}(\mathbf{x}) \hat{e}_{t} \\
+A(\mathbf{x})=a(\mathbf{x})
+\end{array}\right.
+$$
+
+and expanding $\beta \mathcal{H}$ to quadratic order in $\phi$ and $a$.
+(d) Find the correlation lengths $\xi_{\ell}$, and $\xi_{t}$, for the longitudinal and transverse components of $\phi$, for $t>0$ and $t<0$.
+(e) Find the correlation length $\xi_{a}$ for the fluctuations of the scalar field $a$, for $t>0$ and $t<0$.
+(f) Calculate the correlation function $\langle a(\mathbf{x}) a(\mathbf{0})\rangle$ for $t>0$.
+(g) Compute the correction to the saddle point free energy $\ln Z$, from fluctuations. (You can leave the answer in the form of integrals involving $\xi_{\ell}, \xi_{t}$, and $\xi_{a}$.)
+(h) Find the fluctuation corrections to the heat capacity in (b), again leaving the answer in the form of integrals.
+(i) Discuss the behavior of the integrals appearing above schematically, and state their dependence on the correlation length $\xi$, and cutoff $\Lambda$, in different dimensions.
+(j) What is the critical dimension for the validity of saddle point results, and how is it modified by the coupling to the scalar field?
+
+6. Random magnetic fields: Consider the Hamiltonian
+
+$$
+\beta \mathcal{H}=\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}(\nabla m)^{2}+\frac{t}{2} m^{2}+u m^{4}-h(\mathbf{x}) m(\mathbf{x})\right]
+$$
+
+where $m(\mathbf{x})$ and $h(\mathbf{x})$ are scalar fields, and $u>0$. The random magnetic field $h(\mathbf{x})$ results from frozen (quenched) impurities that are independently distributed in space. For simplicity $h(\mathbf{x})$ is assumed to be an independent Gaussian variable at each point $\mathbf{x}$, such that
+
+$$
+\begin{equation*}
+\overline{h(\mathbf{x})}=0, \quad \text { and } \quad \overline{h(\mathbf{x}) h\left(\mathbf{x}^{\prime}\right)}=\Delta \delta^{d}\left(\mathbf{x}-\mathbf{x}^{\prime}\right) \tag{1}
+\end{equation*}
+$$
+
+where the over-line indicates (quench) averaging over all values of the random fields. The above equation implies that the Fourier transformed random field $h(\mathbf{q})$ satisfies
+
+$$
+\begin{equation*}
+\overline{h(\mathbf{q})}=0, \quad \text { and } \quad \overline{h(\mathbf{q}) h\left(\mathbf{q}^{\prime}\right)}=\Delta(2 \pi)^{d} \delta^{d}\left(\mathbf{q}+\mathbf{q}^{\prime}\right) \tag{2}
+\end{equation*}
+$$
+
+(a) Calculate the quench averaged free energy, $\overline{f_{\mathrm{sp}}}=\overline{\min \{\Psi(m)\}_{m}}$, assuming $a$ saddle point solution with uniform magnetization $m(\mathbf{x})=m$. (Note that with this assumption, the random field disappears as a result of averaging and has no effect at this stage.)
+(b) Include fluctuations by setting $m(\mathbf{x})=\bar{m}+\phi(\mathbf{x})$, and expanding $\beta \mathcal{H}$ to second order in $\phi$.
+(c) Express the energy cost of the above fluctuations in terms of the Fourier modes $\phi(\mathbf{q})$.
+(d) Calculate the mean $\langle\phi(\mathbf{q})\rangle$, and the variance $\left.\left.\langle | \phi(\mathbf{q})\right|^{2}\right\rangle_{c}$, where $\langle\cdots\rangle$ denotes the usual thermal expectation value for a fixed $h(\mathbf{q})$.
+(e) Use the above results, in conjunction with Eq. (2), to calculate the quench averaged scattering line shape $S(q)=\overline{\left.\left.\langle | \phi(\mathbf{q})\right|^{2}\right\rangle}$.
+(f) Perform the Gaussian integrals over $\phi(\mathbf{q})$ to calculate the fluctuation corrections, $\delta f[h(\mathbf{q})]$, to the free energy.
+
+$$
+\left(\text { Reminder : } \int_{-\infty}^{\infty} \mathrm{d} \phi \mathrm{~d} \phi^{*} \exp \left(-\frac{K}{2}|\phi|^{2}+h^{*} \phi+h \phi^{*}\right)=\frac{2 \pi}{K} \exp \left(\frac{|h|^{2}}{2 K}\right) .\right)
+$$
+
+(g) Use Eq. (2) to calculate the corrections due to the fluctuations in the previous part to the quench averaged free energy $\bar{f}$. (Leave the corrections in the form of two integrals.)
+(h) Estimate the singular $t$ dependence of the integrals obtained in the fluctuation corrections to the free energy.
+(i) Find the upper critical dimension, $d_{u}$, for the validity of saddle point critical behavior.
+
+7. Long-range interactions: Consider a continuous spin field $\vec{s}(\mathbf{x})$, subject to a longrange ferromagnetic interaction
+
+$$
+\int \mathrm{d}^{d} \mathbf{x d}^{d} \mathbf{y} \frac{\vec{s}(\mathbf{x}) \cdot \vec{s}(\mathbf{y})}{|\mathbf{x}-\mathbf{y}|^{d+\sigma}}
+$$
+
+as well as short-range interactions.
+(a) How is the quadratic term in the Landau-Ginzburg expansion modified by the presence of this long-range interaction? For what values of $\sigma$ is the long-range interaction dominant?
+(b) By estimating the magnitude of thermally excited Goldstone modes (or otherwise), obtain the lower critical dimension $d_{\ell}$ below which there is no long-range order.
+(c) Find the upper critical dimension $d_{u}$, above which saddle point results provide a correct description of the phase transition.
+
+8. Ginzburg criterion along the magnetic field direction: Consider the Hamiltonian
+
+$$
+\beta \mathcal{H}=\int \mathrm{d}^{d} \mathbf{x}\left[\frac{K}{2}(\nabla \vec{m})^{2}+\frac{t}{2} \vec{m}^{2}+u\left(\vec{m}^{2}\right)^{2}-\vec{h} \cdot \vec{m}\right],
+$$
+
+describing an $n$-component magnetization vector $\vec{m}(\mathbf{x})$, with $u>0$.
+(a) In the saddle point approximation, the free energy is $f=\min \{\Psi(m)\}_{m}$. Indicate the resulting phase boundary in the $(h, t)$ plane, and label the phases. ( $h$ denotes the magnitude of $\vec{h}$.)
+(b) Sketch the form of $\Psi(m)$ for $t<0$, on both sides of the phase boundary, and for $t>0$ at $h=0$.
+(c) For $t$ and $h$ close to zero, the spontaneous magnetization can be written as $\bar{m}=$ $t^{\beta} g_{m}\left(h / t^{\Delta}\right)$. Identify the exponents $\beta$ and $\Delta$ in the saddle point approximation. For the remainder of this problem set $t=0$.
+(d) Calculate the transverse and longitudinal susceptibilities at a finite $h$.
+(e) Include fluctuations by setting $\vec{m}(\mathbf{x})=\left(\bar{m}+\phi_{\ell}(\mathbf{x})\right) \hat{e}_{\ell}+\vec{\phi}_{t}(\mathbf{x}) \hat{e}_{t}$, and expanding $\beta \mathcal{H}$ to second order in the $\phi \mathrm{s}$. ( $\hat{e}_{\ell}$ is a unit vector parallel to the average magnetization, and $\hat{e}_{t}$ is perpendicular to it.)
+(f) Calculate the longitudinal and transverse correlation lengths.
+(g) Calculate the first correction to the free energy from these fluctuations. (The scaling form is sufficient.)
+(h) Calculate the first correction to magnetization, and to longitudinal susceptibility from the fluctuations.
+(i) By comparing the saddle point value with the correction due to fluctuations, find the upper critical dimension, $d_{u}$, for the validity of the saddle point result.
+(j) For $d<d_{u}$ obtain a Ginzburg criterion by finding the field $h_{G}$ below which fluctuations are important. (You may ignore the numerical coefficients in $h_{G}$, but the dependences on $K$ and $u$ are required.) 

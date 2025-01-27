@@ -53,7 +53,7 @@
             const noteList = document.getElementById('note-list');
             noteList.innerHTML = notes.map(note => `
                 <div class="note-item" data-id="${note.id}">
-                    <div class="note-title">${note.title}</div>
+                    <div class="note-title">${note.title.replace('.html','')}</div>
                     <div class="note-meta">最后更新：${note.modifiedTime}</div>
                     <div class="note-actions">
                         <button class="view-btn" onclick="viewNote('${note.filename}')">查看</button>
