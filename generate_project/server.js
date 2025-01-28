@@ -82,7 +82,7 @@ app.post('/generate', (req, res) => {
       'index.html',
       'readme.md',
       'package.json',
-      'package_lock.json',
+      'package-lock.json',
       'check_env_and_start.py'
     ];
     copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
