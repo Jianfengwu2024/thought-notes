@@ -21,18 +21,16 @@ def check_and_install_dependencies():
 
     # Extract dependencies
     dependencies = package_lock.get('packages', {}).get('', {}).get('dependencies', {})
-    subprocess.check_call('npm install', cwd=script_directory, shell=True)
-    subprocess.check_call(['npm', 'install', f"sqlite3"], cwd=script_directory, shell=True)
     
     # Check and install each dependency
     for package, version in dependencies.items():
         try:
             # Check if the package is installed
-            subprocess.check_output(['npm', 'list', package])
+            subprocess.check_output(['npm', 'list', package], cwd=script_directory, shell=True)
         except subprocess.CalledProcessError:
             # If not installed, install the package
             print(f"Installing {package}...")
-            subprocess.check_call(['npm', 'install', f"{package}@{version}"])
+            subprocess.check_call(['npm', 'install', f"{package}@{version}"], cwd=script_directory, shell=True)
 
 def start_server(script_directory):
     # Start the server
