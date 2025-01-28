@@ -4,34 +4,43 @@ import subprocess
 import sys
 import webbrowser
 
-
 def check_and_install_dependencies():
     # Get the directory of the current script
     script_directory = os.path.dirname(os.path.abspath(__file__))
     print(f"Script directory: {script_directory}")
 
-    # Check if package-lock.json exists in the script directory
-    package_lock_path = os.path.join(script_directory, 'package-lock.json')
-    if not os.path.exists(package_lock_path):
-        print("package-lock.json not found in the script directory.")
+    # Check if package.json exists in the script directory
+    package_json_path = os.path.join(script_directory, 'package.json')
+    if not os.path.exists(package_json_path):
+        print("package.json not found in the script directory.")
         sys.exit(1)
-    # Load package-lock.json
-    with open(script_directory+'/package.json', 'r') as f:
-        package_lock = json.load(f)
+
+    # Load package.json
+    with open(package_json_path, 'r') as f:
+        package_json = json.load(f)
 
     # Extract dependencies
-    dependencies = package_lock.get('packages', {}).get('', {}).get('dependencies', {})
-    
+    dependencies = package_json.get('dependencies', {})
+
+    # Check if node_modules directory exists
+    node_modules_path = os.path.join(script_directory, 'node_modules')
+    if not os.path.exists(node_modules_path):
+        print("node_modules directory not found. Installing all dependencies...")
+        subprocess.run(['npm', 'install'], cwd=script_directory, shell=True, check=True)
+        subprocess.run(['npm', 'install','sqlite3'], cwd=script_directory, shell=True, check=True)
+        subprocess.run(['npm', 'install','ws'], cwd=script_directory, shell=True, check=True)
+
     # Check and install each dependency
     for package, version in dependencies.items():
         try:
             # Check if the package is installed
-            subprocess.check_output(['npm', 'list', package], cwd=script_directory, shell=True)
+            output = subprocess.check_output(['npm', 'list', package], cwd=script_directory, shell=True, text=True)
+            if '(empty)' in output:
+                raise subprocess.CalledProcessError(0, f'npm list {package}', output)
         except subprocess.CalledProcessError:
             # If not installed, install the package
             print(f"Installing {package}...")
-            subprocess.check_call(['npm', 'install', f"{package}@{version}"], cwd=script_directory, shell=True)
-
+            subprocess.run(['npm', 'install', f"{package}@{version}"], cwd=script_directory, shell=True)
 def start_server(script_directory):
     # Start the server
     print("Starting server...")
