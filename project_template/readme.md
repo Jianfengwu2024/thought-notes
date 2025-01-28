@@ -22,7 +22,9 @@ npm start
 ```
 
 # 傻瓜式启动
-双击 start_server.bat, Enjoy it.
+python打开check_env_and_start.py, 运行即可。
+命令行：python [项目笔记文件夹]/check_env_and_start.py 
+如已安装python IDE, 直接双击打开后运行。
 
 ## 文件结构
 ```

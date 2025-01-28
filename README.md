@@ -5,7 +5,7 @@
 ## 使用步骤
 
 
-1. 安装node.js
+1. 安装node.js, 请参考官网 [text](https://nodejs.org/zh-cn)
 
 2. 安装 npm 以及 ws, 注意，安装npm 就是npm install 不带任何参数。
    安装好了之后，才能用npm install ws 来安装ws模块。
