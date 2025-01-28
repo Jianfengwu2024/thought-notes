@@ -122,12 +122,55 @@ marked.use({
 document.addEventListener('DOMContentLoaded', () => {
   const uploadBtn = document.getElementById('upload-note-btn');
   const uploadDialog = document.getElementById('upload-dialog');
+  const cancelUploadBtn = document.getElementById('cancel-upload'); // Assuming this is the ID of the cancel button
   const fileInput = document.getElementById('file-input');
   const confirmUploadBtn = document.getElementById('confirm-upload');
   const markdownInput = document.getElementById('markdown-input');
   const htmlOutput = document.getElementById('html-output');
   const savePublishBtn = document.getElementById('save-publish-btn');
   const sidebar = document.getElementById('sidebar');
+
+  // 确保元素可见
+  markdownInput.style.display = 'block';
+  htmlOutput.style.display = 'block';
+
+  // 渲染Markdown内容
+  const renderMarkdown = () => {
+    // 替换\tilde{}为\widetilde{}
+    let processedText = markdownInput.innerText
+        .replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}')
+        .replace(/\\tilde\s+([a-zA-Z])/g, '\\widetilde{$1}'); // Handle \tilde x
+    
+    // 解析标签和自动编号
+    const labels = {};
+    let equationNumber = 0;
+    processedText = processedText.replace(/(\\begin\{[a-zA-Z*]+\}[\s\S]*?\\end\{[a-zA-Z*]+\})|(\$\$[\s\S]*?\$\$)/g, (match) => {
+      const labelMatch = match.match(/\\label\{([^}]*)\}/);
+      if (labelMatch) {
+        equationNumber++;
+        labels[labelMatch[1]] = equationNumber;
+        match = match.replace(labelMatch[0], ''); // Remove the label from the content
+        return match.replace(/(\$\$|\\end\{[a-zA-Z*]+\})$/, `\\tag{${equationNumber}}$1`);
+      }
+      return match;
+    });
+    // 处理引用
+    processedText = processedText.replace(/\\ref\{([^}]*)\}/g, (match, ref) => {
+        return labels[ref] ? labels[ref] : '?'; // Replace with label number or '?' if not found
+    });
+
+    // 解析Markdown并渲染公式
+    const html = marked.parse(processedText);
+    htmlOutput.innerHTML = html;
+    };
+    
+    // 监听输入事件
+    markdownInput.addEventListener('input', () => {
+    renderMarkdown();
+    });
+
+    // 初始渲染
+    renderMarkdown();
 
   // 检查URL参数
   const urlParams = new URLSearchParams(window.location.search);
@@ -164,6 +207,15 @@ document.addEventListener('DOMContentLoaded', () => {
           reader.readAsText(selectedFile);  // 读取文件内容
       }
   });
+
+    // 确保取消按钮始终可点击
+    cancelUploadBtn.disabled = false;
+
+    // 添加取消按钮的点击事件监听器
+    cancelUploadBtn.addEventListener('click', () => {
+        uploadDialog.style.display = 'none'; // 隐藏对话框
+    });
+
 
 
     if (!markdownInput || !htmlOutput) {
@@ -262,28 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // 实时Markdown解析和自动保存
 let lastRenderedContent = '';
 let isRendering = false;
-
-const renderMarkdown = () => {
-    if (isRendering) return;
-    isRendering = true;
-    
-    const markdownText = markdownInput.innerText;
-    if (markdownText === lastRenderedContent) {
-        isRendering = false;
-        return;
-    }
-    
-    // 替换\tilde{}为\widetilde{}
-    const processedText = markdownText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
-    // 解析Markdown并渲染公式
-    const html = marked.parse(processedText);
-    htmlOutput.innerHTML = html;
-    lastRenderedContent = markdownText;
-    
-    // 自动保存Markdown内容
-    localStorage.setItem('markdownContent', markdownText);
-    isRendering = false;
-};
 
 // 防抖处理
 let renderTimeout;
