@@ -4,7 +4,6 @@
 
 ## 使用步骤
 
-使用傻瓜dat: 
 
 1. 安装node.js
 
@@ -14,24 +13,14 @@
    npm install
    npm install ws
   ```
-
-3. **启动生成器**
-   - 在当前目录运行以下命令：
-     ```bash
-     node generate_project/server.js
-     ```
-
-4. **配置项目**
-   - 打开浏览器，访问：
-     ```
-     http://localhost:3000/config.html
-     ```
+3. 直接点击 onestetp_generate.bat
+在打开的网页里：
    - 填写以下信息：
      - 项目标题
      - 主分类
      - 子分类
 
-5. **生成项目**
+4. **生成项目**
    - 点击"生成"按钮，系统将自动创建您的笔记项目
 
 

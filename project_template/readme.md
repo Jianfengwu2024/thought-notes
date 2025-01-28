@@ -21,6 +21,9 @@ npm run dev
 npm start
 ```
 
+# 傻瓜式启动
+双击 start_server.bat, Enjoy it.
+
 ## 文件结构
 ```
 project_template/
