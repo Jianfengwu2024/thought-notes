@@ -120,18 +120,57 @@ marked.use({
 
 // 添加页面上的监听器
 document.addEventListener('DOMContentLoaded', () => {
-    const markdownInput = document.getElementById('markdown-input');
-    const htmlOutput = document.getElementById('html-output');
+  const uploadBtn = document.getElementById('upload-note-btn');
+  const uploadDialog = document.getElementById('upload-dialog');
+  const fileInput = document.getElementById('file-input');
+  const confirmUploadBtn = document.getElementById('confirm-upload');
+  const markdownInput = document.getElementById('markdown-input');
+  const htmlOutput = document.getElementById('html-output');
+  const savePublishBtn = document.getElementById('save-publish-btn');
+  const sidebar = document.getElementById('sidebar');
+
+  // 检查URL参数
+  const urlParams = new URLSearchParams(window.location.search);
+  const isEditMode = urlParams.get('editMode') === 'true';
+  // 弹出文件上传对话框
+  uploadBtn.addEventListener('click', () => {
+      uploadDialog.style.display = 'block';  // 显示对话框
+  });
+
+  // 监听文件选择
+  fileInput.addEventListener('change', (event) => {
+      const selectedFile = event.target.files[0];
+
+      // 如果选择了文件，则启用确认上传按钮
+      if (selectedFile && selectedFile.name.endsWith('.md')) {
+          confirmUploadBtn.disabled = false;
+      } else {
+          confirmUploadBtn.disabled = true;  // 非.md文件禁用按钮
+      }
+  });
+
+  // 处理文件上传
+  confirmUploadBtn.addEventListener('click', async () => {
+      const selectedFile = fileInput.files[0];
+      if (selectedFile) {
+          const reader = new FileReader();
+
+          // 读取文件内容并将其显示到 markdownInput 区域
+          reader.onload = function (e) {
+              markdownInput.innerText = e.target.result;
+              uploadDialog.style.display = 'none';  // 隐藏对话框
+          };
+
+          reader.readAsText(selectedFile);  // 读取文件内容
+      }
+  });
+
+
     if (!markdownInput || !htmlOutput) {
         console.error('Required elements not found');
         return;
     }
-    const savePublishBtn = document.getElementById('save-publish-btn');
-    const sidebar = document.getElementById('sidebar');
 
-    // 检查URL参数
-    const urlParams = new URLSearchParams(window.location.search);
-    const isEditMode = urlParams.get('editMode') === 'true';
 
     // 如果是编辑模式，从localStorage获取内容
     if (isEditMode) {

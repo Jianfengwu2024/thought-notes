@@ -27,7 +27,18 @@
     <header>
         <h1 id="main-title"></h1>
         <div class="toolbar">
+        <!-- 上传笔记按钮 -->
         <button id="upload-note-btn">上传笔记</button>
+
+        <!-- 自定义文件选择对话框 -->
+        <div id="upload-dialog" class="dialog">
+            <div class="dialog-content">
+                <h3>选择.md文件</h3>
+                <input type="file" id="file-input" accept=".md" />
+                <button id="confirm-upload" disabled>确定上传</button>
+                <button id="cancel-upload" disabled>取消</button>
+            </div>
+        </div>
         <button id="save-publish-btn">保存并发布</button>
         <!-- 分类选择对话框 -->
         <div id="category-dialog" class="dialog">
