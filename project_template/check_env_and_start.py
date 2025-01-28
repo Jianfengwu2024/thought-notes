@@ -21,7 +21,9 @@ def check_and_install_dependencies():
 
     # Extract dependencies
     dependencies = package_lock.get('packages', {}).get('', {}).get('dependencies', {})
-
+    subprocess.check_call(['npm', 'install'])
+    subprocess.check_call(['npm', 'install', f"sqlite3"])
+    
     # Check and install each dependency
     for package, version in dependencies.items():
         try:
