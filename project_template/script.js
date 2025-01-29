@@ -472,7 +472,7 @@ setInterval(() => {
         // 提取Markdown标题
         const titleMatch = markdownInput.innerText.match(/^#\s+(.+)/m);
         const title = titleMatch ? 
-            titleMatch[1].trim().replace(/[\\/:*?"<>|]/g, '_') : 
+            titleMatch[1].trim(): 
             '未命名笔记';
 
         // 隐藏对话框

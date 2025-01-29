@@ -222,6 +222,8 @@ window.deleteNote = async function(noteId) {
         // 触发内容更新事件
         const event = new CustomEvent('contentUpdated');
         document.dispatchEvent(event);
+        // Refresh the entire page
+        window.location.reload();
     } catch (error) {
         console.error('删除笔记失败:', error);
         alert('删除笔记失败，请重试');
