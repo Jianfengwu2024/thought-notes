@@ -94,7 +94,8 @@ marked.use({
       }
     },
     renderer(token) {
-      return `<span class="highlight">${token.text}</span>`;
+      // Re-parse the highlighted text to handle additional markdown, such as inline math
+      return `<span class="highlight">${marked.parseInline(token.text)}</span>`;
     }
   },
   {
@@ -113,7 +114,8 @@ marked.use({
       }
     },
     renderer(token) {
-      return `<span class="highlight"><strong>${token.text}</strong></span>`;
+      // Re-parse the bold highlighted text to handle additional markdown, such as inline math
+      return `<span class="highlight"><strong>${marked.parseInline(token.text)}</strong></span>`;
     }
   }]
 });
@@ -295,13 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (categoryItem) {
                 categoryItem.click();
             }
-        }
-
-        // 恢复Markdown内容
-        const savedContent = localStorage.getItem('markdownContent');
-        if (savedContent) {
-            markdownInput.innerText = savedContent;
-            markdownInput.dispatchEvent(new Event('input'));
         }
     }
     

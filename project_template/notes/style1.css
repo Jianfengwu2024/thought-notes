@@ -198,30 +198,30 @@ header {
     transition: all 0.2s ease;
 }
 
-.btn-view {
+.view-btn {
     background: #4CAF50;
     color: white;
 }
 
-.btn-view:hover {
+.view-btn:hover {
     background: #45a049;
 }
 
-.btn-edit {
+.edit-btn {
     background: #2196F3;
     color: white;
 }
 
-.btn-edit:hover {
+.edit-btn:hover {
     background: #1e88e5;
 }
 
-.btn-delete {
+.delete-btn {
     background: #f44336;
     color: white;
 }
 
-.btn-delete:hover {
+.delete-btn:hover {
     background: #e53935;
 }
 
