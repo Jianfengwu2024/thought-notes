@@ -322,39 +322,20 @@ app.post('/api/update', (req, res) => {
         const oldFilename = row.title;
         const saveDir = path.join(__dirname, 'notes', savePath);
 
-        // 从markdown内容中提取新标题
-        const getTitleFromMarkdown = (content) => {
-            if (!content) return title;
-            
-            const h1Match = content.match(/^#\s+(.+)$/m);
-            if (h1Match) return h1Match[1].trim();
-            
-            const h2Match = content.match(/^##\s+(.+)$/m);
-            if (h2Match) return h2Match[1].trim();
-            
-            return title;
-        };
-
-        // 生成新文件名
-        const cleanTitle = getTitleFromMarkdown(markdownContent || '')
-            .replace(/[<>:"/\\|?*]/g, '')
-            .replace(/\s+/g, '_');
-        const timestamp = new Date().toISOString().slice(0, 16).replace(/:/g, '-');
-        const newFilename = `${cleanTitle}.html`;
-
-        // 更新HTML文件
-        const newHtmlPath = path.join(saveDir, newFilename);
-        fs.writeFileSync(newHtmlPath, content);
-
-        // 更新Markdown文件
-        const newMdPath = path.join(saveDir, `${cleanTitle}.md`);
-        fs.writeFileSync(newMdPath, markdownContent || '');
-
         // 删除旧文件
         const oldHtmlPath = path.join(saveDir, oldFilename);
         const oldMdPath = path.join(saveDir, oldFilename.replace('.html', '.md'));
         if (fs.existsSync(oldHtmlPath)) fs.unlinkSync(oldHtmlPath);
         if (fs.existsSync(oldMdPath)) fs.unlinkSync(oldMdPath);
+
+
+        // 更新HTML文件
+        fs.writeFileSync(oldHtmlPath, content);
+
+        // 更新Markdown文件
+        fs.writeFileSync(oldMdPath, markdownContent || '');
+
+        
 
         // 更新数据库记录
         const sql = `UPDATE notes SET 
@@ -365,7 +346,7 @@ app.post('/api/update', (req, res) => {
                     markdown_content = ?,
                     modified_at = CURRENT_TIMESTAMP
                     WHERE id = ?`;
-        const params = [category, subcategory, newFilename, content, markdownContent, req.body.id];
+        const params = [category, subcategory, oldFilename, content, markdownContent, req.body.id];
 
         db.run(sql, params, function(err) {
             if (err) {
@@ -380,7 +361,7 @@ app.post('/api/update', (req, res) => {
                 const watcher = watchers.get(`${category}/${subcategory}`);
                 if (watcher) {
                     watcher.emit('unlink', oldHtmlPath);
-                    watcher.emit('add', newHtmlPath);
+                    watcher.emit('add', oldHtmlPath);
                 }
 
                 res.json({
