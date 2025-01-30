@@ -112,3 +112,281 @@ entity "笔记" {
     }
   ]
 }
+
+# 流程图 
+
+script.js的流程图
+
+@startuml
+
+start
+
+:Page Load;
+:Initialize Elements;
+note right
+  - Select markdownInput
+  - Select htmlOutput
+  - Initialize other elements
+end note
+
+:Attach Event Listeners;
+
+if (File Upload?) then (yes)
+  :Check if file is .md;
+  if (Is .md file?) then (yes)
+    :Enable upload button;
+  else (no)
+    :Disable upload button;
+  endif
+endif
+
+:Render Markdown;
+repeat
+  :Input Event;
+  :Process Text;
+  note right
+    - Apply highlighting
+    - Render math
+  end note
+  :Update htmlOutput;
+repeat while (More input?)
+
+if (Save Note?) then (yes)
+  :Check content size;
+  if (Within limits?) then (yes)
+    :Proceed to save;
+  else (no)
+    :Show error message;
+  endif
+endif
+
+:Error Handling;
+note right
+  - Display error messages
+  - Log errors
+end note
+
+stop
+
+@enduml
+
+## Server.js 流程图
+@startuml
+
+start
+
+:Initialize Server;
+:Load Modules;
+note right
+  - express
+  - path
+  - fs
+  - sqlite3
+  - compression
+  - chokidar
+  - WebSocket
+end note
+
+:Create Express App;
+:Create WebSocket Server;
+:Initialize Database;
+note right
+  - Connect to SQLite
+  - Create notes table if not exists
+end note
+
+:Initialize File Watchers;
+note right
+  - Watch directories for changes
+  - Handle file events
+end note
+
+:Setup Middleware;
+note right
+  - compression
+  - express.json
+  - static file serving
+end note
+
+:Define Routes;
+note right
+  - GET /
+  - GET /notes/:category/:subcategory/contents.html
+  - GET /api/notes
+  - POST /api/save
+  - POST /api/update
+  - GET /api/search
+end note
+
+:Start HTTP Server;
+note right
+  - Listen on port 3000
+  - Handle WebSocket upgrades
+end note
+
+stop
+
+@enduml
+
+## notes/subscript.js 流程图
+@startuml
+
+start
+
+:Initialize Note List;
+note right
+  - Fetch notes from server
+  - Render notes
+end note
+
+:Render Note List;
+note right
+  - Display loading state
+  - Handle empty list
+  - Render each note
+  - Add sorting functionality
+end note
+
+:Initialize Event Handlers;
+note right
+  - Handle view, edit, delete actions
+end note
+
+:Initialize WebSocket Connection;
+note right
+  - Listen for file changes
+  - Refresh note list on change
+end note
+
+:Delete Note;
+note right
+  - Confirm deletion
+  - Send delete request to server
+  - Refresh note list
+  - Reload page
+end note
+
+:View Note;
+note right
+  - Fetch note content
+  - Render content in HTML output
+end note
+
+stop
+
+@enduml
+
+# 结构图
+
+## index.html 结构图
+@startuml
+
+package "index.html" {
+    node "HTML Document" {
+        [DOCTYPE html]
+        [html lang="zh-CN"]
+    }
+
+    node "Head" {
+        [meta charset="UTF-8"]
+        [meta name="viewport"]
+        [title id="dynamic-title"]
+        [link rel="stylesheet" href="style.css"]
+        [link rel="stylesheet" href="codemirror.css"]
+        [script src="marked.min.js"]
+        [link rel="stylesheet" href="katex.min.css"]
+        [script src="codemirror.min.js"]
+        [script src="markdown.min.js"]
+        [script defer src="katex.min.js"]
+        [script src="lz-string.min.js"]
+        [script src="script.js" defer]
+        [script src="advanced_script.js" defer]
+        [script] "fs polyfill"
+    }
+
+    node "Body" {
+        node "Header" {
+            [h1 id="main-title"]
+            node "Toolbar" {
+                [button id="upload-note-btn"]
+                node "Upload Dialog" {
+                    [div id="upload-dialog" class="dialog"]
+                    [input type="file" id="file-input"]
+                    [button id="confirm-upload"]
+                    [button id="cancel-upload"]
+                }
+                [button id="save-publish-btn"]
+                node "Category Dialog" {
+                    [div id="category-dialog" class="dialog"]
+                    [select id="main-category"]
+                    [select id="sub-category"]
+                    [button id="confirm-save"]
+                    [button id="cancel-save"]
+                }
+            }
+        }
+        node "Container" {
+            [nav id="sidebar"]
+            [div class="markdown-container"]
+            [div id="markdown-input" class="markdown-input"]
+            [div class="html-container"]
+            [div id="html-output"]
+        }
+    }
+}
+
+@enduml
+
+## notes/分类/子分类/contents.html 结构图
+@startuml
+
+package "contents_template.html" {
+    node "HTML Document" {
+        [DOCTYPE html]
+        [html lang="zh-CN"]
+    }
+
+    node "Head" {
+        [meta charset="UTF-8"]
+        [meta name="viewport"]
+        [title id="dynamic-title"]
+        [link rel="stylesheet" href="../../../style.css"]
+        [link rel="stylesheet" href="../../style1.css"]
+        [script src="marked.min.js"]
+        [link rel="stylesheet" href="katex.min.css"]
+        [script defer src="katex.min.js"]
+        [script src="../../../script.js" defer]
+        [script src="../../subscript.js" defer]
+        [script] "fs polyfill and WebSocket"
+    }
+
+    node "Body" {
+        node "Header" {
+            [h1 id="main-title"]
+            node "Toolbar" {
+                node "Category Dialog" {
+                    [div id="category-dialog" class="dialog"]
+                    [select id="main-category"]
+                    [select id="sub-category"]
+                    [button id="confirm-save"]
+                    [button id="cancel-save"]
+                }
+            }
+        }
+        node "Container" {
+            [nav id="sidebar"]
+            node "Main Content" {
+                node "Note List Container" {
+                    [div class="note-list-header"]
+                    [button class="home-btn"]
+                    [select id="sort-by"]
+                    [div id="note-list"]
+                }
+                [div id="html-output"]
+            }
+        }
+    }
+}
+
+@enduml
+
