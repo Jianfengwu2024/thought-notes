@@ -32,7 +32,7 @@ header {
     display: flex;
     align-items: flex-start;
     gap: 20px;
-    max-width: 200px;
+    max-width: 120px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -150,6 +150,29 @@ header {
     font-size: 14px;
     color: #4a5568;
     font-weight: 500;
+}
+
+/* Highlight styling */
+.highlight {
+    background-color: #b0ffc4;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.highlight strong {
+    background-color: #82ffc5;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.note-list-container {
+    width: 260px;
+    padding: 15px 0 15px 15px;
+    background-color: white;
+    overflow-y: auto;
+    height: calc(100vh - 80px);
+    min-height: 300px;
+    scrollbar-width: thin;
 }
 
 /* 笔记项样式 */
@@ -322,20 +345,25 @@ header h1 {
 
 #html-output {
     width: 100%;
-    padding: 15px;
+    padding: 35px; /* 增加了宽度 */
+    padding-right: auto;
+    padding-left: auto;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    font-size: 22px; /* 增加字体大小 */
     overflow-y: auto;
     background-color: #faf8f2;
     color: #5c4b36;
-    line-height: 1.6;
-    min-height: 200px;
+    line-height: 1.8; /* 增加了行距 */
+    min-height: 300px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    margin: 10px 0;
+    margin: 10px 10px;
 }
 
 #html-output .note-item {
     padding: 10px;
-    margin: 5px 0;
+    margin: 20px 20px;
     background: white;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);

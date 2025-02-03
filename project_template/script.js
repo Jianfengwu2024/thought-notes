@@ -322,7 +322,7 @@ setInterval(() => {
     if (markdownInput.innerText && markdownInput.innerText !== lastRenderedContent) {
         renderMarkdown();
     }
-}, 5000);
+}, 600000);
 
     // 获取对话框相关元素
     const dialog = document.getElementById('category-dialog');
