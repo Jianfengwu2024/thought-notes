@@ -120,6 +120,120 @@ marked.use({
   }]
 });
 
+// Debounce function to limit the rate at which a function is executed
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// Function to render visible markdown content
+function renderVisibleMarkdown() {
+  const markdownInput = document.getElementById('markdown-input');
+  const htmlOutput = document.getElementById('html-output');
+
+  if (!markdownInput || !htmlOutput) return;
+
+  // Calculate visible area
+  const rect = markdownInput.getBoundingClientRect();
+  if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+      // Render markdown if the element is visible
+      renderMarkdown();
+  }
+}
+
+// Function to render markdown content
+function renderMarkdown() {
+  const markdownInput = document.getElementById('markdown-input');
+  const htmlOutput = document.getElementById('html-output');
+
+  if (!markdownInput || !htmlOutput) return;
+
+  let processedText = markdownInput.innerText
+      .replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}')
+      .replace(/\\tilde\s+([a-zA-Z])/g, '\\widetilde{$1}');
+
+  const labels = {};
+  let equationNumber = 0;
+  processedText = processedText.replace(/(\\begin\{[a-zA-Z*]+\}[\s\S]*?\\end\{[a-zA-Z*]+\})|(\$\$[\s\S]*?\$\$)/g, (match) => {
+    const labelMatch = match.match(/\\label\{([^}]*)\}/);
+    if (labelMatch) {
+      equationNumber++;
+      labels[labelMatch[1]] = equationNumber;
+      match = match.replace(labelMatch[0], '');
+      return match.replace(/(\$\$|\\end\{[a-zA-Z*]+\})$/, `\\tag{${equationNumber}}$1`);
+    }
+    return match;
+  });
+
+  processedText = processedText.replace(/\\ref\{([^}]*)\}/g, (match, ref) => {
+      return labels[ref] ? labels[ref] : '?';
+  });
+
+  const html = marked.parse(processedText);
+  htmlOutput.innerHTML = html;
+}
+
+// Initialize lazy loading for markdown rendering
+function initLazyLoadingForMarkdown() {
+  const markdownContainer = document.querySelector('.markdown-container');
+  if (!markdownContainer) return;
+
+  markdownContainer.addEventListener('scroll', debounce(renderVisibleMarkdown, 200));
+}
+
+// 初始化导航栏点击事件
+function initNavigation() {
+  document.querySelectorAll('.subcategory').forEach(subcategory => {
+      // 如果已经初始化过则跳过
+      if (subcategory.dataset.initialized) return;
+      
+      // 添加跳转链接
+      const link = document.createElement('a');
+      const parentCategory = subcategory.closest('.category').querySelector('.category-title').textContent;
+      link.href = `notes/${encodeURIComponent(parentCategory)}/${encodeURIComponent(subcategory.textContent)}/contents.html`;
+      link.style.textDecoration = 'none';
+      link.style.color = 'inherit';
+      link.style.display = 'block';
+      link.style.width = '100%';
+      link.style.height = '100%';
+      
+      // 将子分类内容移动到链接中
+      while (subcategory.firstChild) {
+          link.appendChild(subcategory.firstChild);
+      }
+      subcategory.appendChild(link);
+
+      subcategory.addEventListener('click', async function(e) {
+          // 允许链接跳转
+          const link = this.querySelector('a');
+          if (link) {
+              window.location.href = link.href;
+          }
+
+          // 处理点击效果
+          document.querySelectorAll('.subcategory').forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+          
+          // 保存选中的分类
+          const category = this.closest('.category').querySelector('.category-title').textContent;
+          const subcategoryName = this.textContent;
+          localStorage.setItem('selectedCategory', this.dataset.id);
+
+          // 如果是index.html页面，保持编辑器可见
+          if (document.getElementById('markdown-input')) {
+              document.getElementById('markdown-input').style.display = 'block';
+              document.getElementById('html-output').style.display = 'block';
+          }
+      });
+
+      // 标记为已初始化
+      subcategory.dataset.initialized = true;
+  });
+}
+
 // 添加页面上的监听器
 document.addEventListener('DOMContentLoaded', () => {
   const uploadBtn = document.getElementById('upload-note-btn');
@@ -136,43 +250,11 @@ document.addEventListener('DOMContentLoaded', () => {
   markdownInput.style.display = 'block';
   htmlOutput.style.display = 'block';
 
-  // 渲染Markdown内容
-  const renderMarkdown = () => {
-    // 替换\tilde{}为\widetilde{}
-    let processedText = markdownInput.innerText
-        .replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}')
-        .replace(/\\tilde\s+([a-zA-Z])/g, '\\widetilde{$1}'); // Handle \tilde x
-    
-    // 解析标签和自动编号
-    const labels = {};
-    let equationNumber = 0;
-    processedText = processedText.replace(/(\\begin\{[a-zA-Z*]+\}[\s\S]*?\\end\{[a-zA-Z*]+\})|(\$\$[\s\S]*?\$\$)/g, (match) => {
-      const labelMatch = match.match(/\\label\{([^}]*)\}/);
-      if (labelMatch) {
-        equationNumber++;
-        labels[labelMatch[1]] = equationNumber;
-        match = match.replace(labelMatch[0], ''); // Remove the label from the content
-        return match.replace(/(\$\$|\\end\{[a-zA-Z*]+\})$/, `\\tag{${equationNumber}}$1`);
-      }
-      return match;
-    });
-    // 处理引用
-    processedText = processedText.replace(/\\ref\{([^}]*)\}/g, (match, ref) => {
-        return labels[ref] ? labels[ref] : '?'; // Replace with label number or '?' if not found
-    });
+  // 初始渲染
+  renderMarkdown();
 
-    // 解析Markdown并渲染公式
-    const html = marked.parse(processedText);
-    htmlOutput.innerHTML = html;
-    };
-    
-    // 监听输入事件
-    markdownInput.addEventListener('input', () => {
-    renderMarkdown();
-    });
-
-    // 初始渲染
-    renderMarkdown();
+  // Initialize lazy loading for markdown
+  initLazyLoadingForMarkdown();
 
   // 检查URL参数
   const urlParams = new URLSearchParams(window.location.search);
@@ -372,61 +454,6 @@ setInterval(() => {
             option.textContent = subcategory.textContent;
             subCategorySelect.appendChild(option);
         });
-    }
-
-    // 初始化导航栏点击事件
-    function initNavigation() {
-        document.querySelectorAll('.subcategory').forEach(subcategory => {
-            // 如果已经初始化过则跳过
-            if (subcategory.dataset.initialized) return;
-            
-            // 添加跳转链接
-            const link = document.createElement('a');
-            const parentCategory = subcategory.closest('.category').querySelector('.category-title').textContent;
-            link.href = `notes/${encodeURIComponent(parentCategory)}/${encodeURIComponent(subcategory.textContent)}/contents.html`;
-            link.style.textDecoration = 'none';
-            link.style.color = 'inherit';
-            link.style.display = 'block';
-            link.style.width = '100%';
-            link.style.height = '100%';
-            
-            // 将子分类内容移动到链接中
-            while (subcategory.firstChild) {
-                link.appendChild(subcategory.firstChild);
-            }
-            subcategory.appendChild(link);
-
-            subcategory.addEventListener('click', async function(e) {
-                // 允许链接跳转
-                const link = this.querySelector('a');
-                if (link) {
-                    window.location.href = link.href;
-                }
-
-                // 处理点击效果
-                document.querySelectorAll('.subcategory').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-                
-                // 保存选中的分类
-                const category = this.closest('.category').querySelector('.category-title').textContent;
-                const subcategoryName = this.textContent;
-                localStorage.setItem('selectedCategory', this.dataset.id);
-
-                // 如果是index.html页面，保持编辑器可见
-                if (document.getElementById('markdown-input')) {
-                    document.getElementById('markdown-input').style.display = 'block';
-                    document.getElementById('html-output').style.display = 'block';
-                }
-            });
-
-            // 标记为已初始化
-            subcategory.dataset.initialized = true;
-        });
-    }
-
-    // 初始化导航栏
-    if (document.getElementById('sidebar')) {
-        initNavigation();
     }
 
     // 保存并发布功能
