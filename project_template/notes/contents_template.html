@@ -11,6 +11,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="../../../script.js" defer></script>
     <script src="../../subscript.js" defer></script>
+    <link href="https://fonts.font.im/css?family=Lora|PT+Serif" rel="stylesheet">
     <script>
         // 在浏览器环境中提供fs模块的polyfill
         window.fs = {
@@ -58,7 +59,7 @@
                     <div class="note-meta">最后更新：${note.modifiedTime}</div>
                     <div class="note-actions">
                         <button class="view-btn" onclick="viewNote('${note.filename}')">查看</button>
-                        <button class="edit-btn" disabled>修改</button>
+                        <button class="edit-btn" onclick="editNote('${note.filename}'>编辑</button>
                         <button class="delete-btn" onclick="deleteNote('${note.filename}')">删除</button>
                     </div>
                 </div>
@@ -195,16 +196,6 @@
                 <div class="note-list-header">
                     <h2>笔记列表</h2>
                     <button onclick="window.location.href='../../../index.html'" class="home-btn">返回主页</button>
-                    <div class="sort-controls">
-                        <label>排序方式：
-                            <select id="sort-by">
-                                <option value="date-desc">最新优先</option>
-                                <option value="date-asc">最早优先</option>
-                                <option value="title-asc">标题升序</option>
-                                <option value="title-desc">标题降序</option>
-                            </select>
-                        </label>
-                    </div>
                 </div>
 
                 <div id="note-list">

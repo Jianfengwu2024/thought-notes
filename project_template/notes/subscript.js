@@ -126,9 +126,9 @@ function renderNoteList(notes) {
                 <div class="note-title">${safeTitle}</div>
                 <div class="note-date">最后修改：${formatDate(note.modifiedTime)}</div>
                 <div class="note-actions">
-                    <button class="btn-view" data-filename="${safeFilename}">查看</button>
-                    <button class="btn-edit" data-filename="${safeFilename}">编辑</button>
-                    <button class="btn-delete" data-filename="${safeFilename}">删除</button>
+                    <button class="view-btn" data-filename="${safeFilename}">查看</button>
+                    <button class="edit-btn" data-filename="${safeFilename}">编辑</button>
+                    <button class="delete-btn" data-filename="${safeFilename}">删除</button>
                 </div>
             </div>`; // 确保模板字符串正确闭合
         }).join('');
@@ -333,11 +333,11 @@ function initEventHandlers() {
         const filename = btn.dataset.filename;
         if (!filename) return;
 
-        if (btn.classList.contains('btn-view')) {
+        if (btn.classList.contains('view-btn')) {
             viewNote(filename);
-        } else if (btn.classList.contains('btn-edit')) {
+        } else if (btn.classList.contains('edit-btn')) {
             editNote(filename);
-        } else if (btn.classList.contains('btn-delete')) {
+        } else if (btn.classList.contains('delete-btn')) {
             deleteNote(filename);
         }
     });

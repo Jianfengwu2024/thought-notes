@@ -10,7 +10,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'STHeiti', sans-serif;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -222,12 +222,12 @@ header {
 }
 
 .view-btn {
-    background: #4CAF50;
+    background: #289cc7;
     color: white;
 }
 
 .view-btn:hover {
-    background: #45a049;
+    background: #298ab3;
 }
 
 .edit-btn {
@@ -345,20 +345,21 @@ header h1 {
 
 #html-output {
     width: 100%;
-    padding: 35px; /* 增加了宽度 */
+    padding: 40px; /* 增加了宽度 */
     padding-right: auto;
     padding-left: auto;
     padding-top: 25px;
     padding-bottom: 25px;
     font-size: 22px; /* 增加字体大小 */
     overflow-y: auto;
-    background-color: #faf8f2;
+    background-color: rgba(251, 247, 233, 0.961);
     color: #5c4b36;
     line-height: 1.8; /* 增加了行距 */
     min-height: 300px;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin: 10px 10px;
+    font-family: 'PT Serif', serif;
 }
 
 #html-output .note-item {

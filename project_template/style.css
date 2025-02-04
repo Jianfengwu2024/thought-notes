@@ -387,8 +387,8 @@ header h1 {
     padding: 15px;
     border: none;
     border-right: 1px solid #ddd;
-    font-family: monospace;
-    font-size: 15px;
+    font-family: 'PT Serif', serif;
+    font-size: 16px;
     line-height: 1.5;
     background-color: white;
     color: #333;
@@ -405,7 +405,7 @@ header h1 {
     background-color: #ffebee;
     padding: 2px 4px;
     border-radius: 3px;
-    font-family: 'KaTeX_Math', 'Times New Roman', serif;
+    font-family: 'KaTeX_Math', 'PT Serif', serif;
 }
 
 .markdown-input [data-md-type="math-block"], 
