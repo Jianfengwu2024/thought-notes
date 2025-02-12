@@ -32,7 +32,7 @@ header {
     display: flex;
     align-items: flex-start;
     gap: 20px;
-    max-width: 120px;
+    max-width: 200px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -166,7 +166,7 @@ header {
 }
 
 .note-list-container {
-    width: 260px;
+    width: 330px;
     padding: 15px 0 15px 15px;
     background-color: white;
     overflow-y: auto;
@@ -195,9 +195,11 @@ header {
 }
 
 .note-title {
-    font-size: 18px;
+    font-size: 14px;
     color: #2c3e50;
     font-weight: 500;
+    word-wrap: break-word; /* For older browsers */
+    overflow-wrap: break-word; /* Standard property */
 }
 
 .note-date {

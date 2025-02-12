@@ -120,7 +120,7 @@ const db = new sqlite3.Database(path.join(__dirname, 'notes.db'), (err) => {
 
 // 中间件
 app.use(compression());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '80mb' }));
 app.use(express.static(path.join(__dirname)));
 app.use('/site_data.json', express.static(path.join(__dirname, 'site_data.json')));
 app.use('/notes', express.static(path.join(__dirname, 'notes'), {
@@ -232,10 +232,10 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/save', (req, res) => {
     // 检查payload大小
     const payloadSize = req.headers['content-length'];
-    if (payloadSize > 10 * 1024 * 1024) { // 10MB limit
+    if (payloadSize > 80 * 1024 * 1024) { // 80MB limit
         return res.status(413).json({
             success: false,
-            message: 'Payload too large. Maximum size is 10MB.'
+            message: 'Payload too large. Maximum size is 80MB.'
         });
     }
 
