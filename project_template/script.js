@@ -103,13 +103,24 @@ marked.use({
     level: 'inline',
     start(src) { return src.match(/==\*\*/)?.index; },
     tokenizer(src, tokens) {
-      const rule = /^==\*\*([^=]+)\*\*==/;
-      const match = rule.exec(src);
-      if (match) {
+      const rule1 = /^\*\*==([^=]+)==\*\*/;
+      const rule2 = /^==\*\*([^=]+)\*\*==/;
+      
+      const match1 = rule1.exec(src);
+      if (match1) {
         return {
           type: 'boldHighlight',
-          raw: match[0],
-          text: match[1].trim()
+          raw: match1[0],
+          text: match1[1].trim()
+        };
+      }
+      
+      const match2 = rule2.exec(src);
+      if (match2) {
+        return {
+          type: 'boldHighlight',
+          raw: match2[0],
+          text: match2[1].trim()
         };
       }
     },
@@ -284,11 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // 读取文件内容并将其显示到 markdownInput 区域
           reader.onload = function (e) {
-              markdownInput.innerText = e.target.result;
+                markdownInput.innerText = e.target.result;
               uploadDialog.style.display = 'none';  // 隐藏对话框
+
           };
 
           reader.readAsText(selectedFile);  // 读取文件内容
+          debouncedUpdateLineNumbers();
       }
   });
 
