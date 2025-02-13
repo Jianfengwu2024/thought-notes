@@ -75,22 +75,10 @@ body {
     line-height: 1.6;
     color: #333;
     font-weight: 500;
-    padding: 15px;
+    padding: 5px;
     background-color: rgba(251, 247, 233, 0.961);
     min-height: 300px;
     overflow-y: auto;
-}
-
-#markdown-input {
-    font-family: inherit;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #1a1919;
-    font-weight: 500;
-    padding: 15px;
-    min-height: 300px;
-    overflow-y: auto;
-    background-color: rgb(238, 252, 230);
 }
 
 
@@ -311,13 +299,15 @@ header h1 {
 }
 
 .markdown-container {
-    width: 42%;
+    display: flex;
+    width: 44%;
     padding: 15px 0 15px 15px;
-    background-color: white;
+    background-color: rgb(231, 246, 237);
     overflow-y: auto;
     height: calc(100vh - 80px);
     min-height: 300px;
     scrollbar-width: thin;
+    overflow-y: auto;
 }
 
 .markdown-container::-webkit-scrollbar {
@@ -346,10 +336,47 @@ header h1 {
     background: #1b5e20;
 }
 
+.line-numbers {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    padding: 10px 5px;
+    text-align: right;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ddd;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #666;
+    user-select: none;
+}
+
+.line-numbers div {
+    height: 1.5em;
+}
+
+.markdown-input {
+    flex: 1;
+    padding: 10px 5px 10px 15px;
+    border: none;
+    outline: none;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+
+.markdown-container {
+    position: relative;
+    padding-left: 50px;
+}
+
 .html-container {
-    width: 58%;
+    width: 56%;
     padding: 15px 0 15px 15px;
-    background-color: rgb(249, 249, 249);
+    background-color: rgba(251, 247, 233, 0.961);
     overflow-y: auto;
     height: calc(100vh - 80px);
     min-height: 300px;
@@ -382,21 +409,6 @@ header h1 {
     background: #0d47a1;
 }
 
-.markdown-input {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-right: 1px solid #ddd;
-    font-family: 'PT Serif', serif;
-    font-size: 16px;
-    line-height: 1.5;
-    background-color: white;
-    color: #333;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    outline: none;
-    caret-color: #2e7d32;
-}
 
 /* Math expression styling */
 .markdown-input [data-md-type="math-inline"],
@@ -455,56 +467,6 @@ header h1 {
     background-color: #fff3e0;
     padding: 2px;
     border-radius: 2px;
-}
-
-.markdown-input:focus {
-    background-color: #e0f2f1;
-}
-
-.markdown-input::selection {
-    background: #c8e6c9;
-}
-
-/* Markdown syntax highlighting */
-.markdown-input [data-md-type="header"] {
-    color: #1565c0;
-    font-weight: bold;
-}
-
-.markdown-input [data-md-type="code"] {
-    color: #d32f2f;
-    background-color: #ffebee;
-    padding: 2px 4px;
-    border-radius: 3px;
-}
-
-.markdown-input [data-md-type="list"] {
-    color: #2e7d32;
-}
-
-.markdown-input [data-md-type="emphasis"] {
-    color: #ff9800;
-}
-
-.markdown-input [data-md-type="strong"] {
-    color: #d84315;
-    font-weight: bold;
-}
-
-/* Markdown highlight syntax */
-.markdown-input [data-md-type="highlight"],
-#html-output [data-md-type="highlight"] {
-    background-color: #fff3b0;
-    padding: 2px 4px;
-    border-radius: 3px;
-}
-
-.markdown-input [data-md-type="highlight-strong"],
-#html-output [data-md-type="highlight-strong"] {
-    background-color: #ffe082;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-weight: bold;
 }
 
 pre {
