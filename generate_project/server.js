@@ -103,6 +103,12 @@ app.post('/generate', (req, res) => {
     const notesFiles = ['subscript.js', 'style1.css', 'contents_template.html'];
     copyFiles(path.join(__dirname, '../project_template/notes'), notesPath, notesFiles);
 
+    // 创建images目录
+    const imgPath = path.join(projectPath, 'images');
+    if (!fs.existsSync(imgPath)) {
+      fs.mkdirSync(imgPath, { recursive: true, mode: 0o755 });
+    }
+
     // 创建分类/子分类文件夹结构
     categories.forEach(category => {
       const categoryPath = path.join(notesPath, category.name);

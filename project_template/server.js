@@ -274,6 +274,14 @@ app.post('/api/save', (req, res) => {
     const mdFilePath = path.join(saveDir, `${cleanTitle}.md`);
     fs.writeFileSync(mdFilePath, markdownContent || '');
 
+    // 处理图片
+    const { execSync } = require('child_process');
+    try {
+      execSync(`node handle_images.js "${htmlFilePath}" "${mdFilePath}" "${saveDir}"`);
+    } catch (err) {
+      console.error('图片处理失败:', err.message);
+    }
+
     // 保存到数据库
     const sql = `INSERT INTO notes (category, subcategory, title, content, markdown_content) 
                  VALUES (?, ?, ?, ?, ?)`;
@@ -334,6 +342,14 @@ app.post('/api/update', (req, res) => {
 
         // 更新Markdown文件
         fs.writeFileSync(oldMdPath, markdownContent || '');
+
+        // 处理图片
+        const { execSync } = require('child_process');
+        try {
+          execSync(`node handle_images.js "${oldHtmlPath}" "${oldMdPath}" "${saveDir}"`);
+        } catch (err) {
+          console.error('图片处理失败:', err.message);
+        }
 
         
 
