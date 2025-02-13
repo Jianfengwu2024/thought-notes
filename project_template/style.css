@@ -306,7 +306,7 @@ header h1 {
     border-right: 1px solid #ddd;
     font-family: monospace;
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.57;
     color: #666;
     user-select: none;
     min-width: 40px;
@@ -353,7 +353,7 @@ header h1 {
 
 .markdown-input {
     flex: 1;
-    padding: 10px 5px 10px 60px;
+    padding: 10px 15px 10px 60px;
     border: none;
     outline: none;
     font-family: monospace;

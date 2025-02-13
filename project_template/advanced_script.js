@@ -5,8 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // 更新行号
     function updateLineNumbers() {
         console.log('updateLineNumbers triggered');
-        const lines = markdownInput.innerText.split('\n').length;
-        lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => `<div>${i + 1}</div>`).join('');
+        const lineHeight = parseInt(window.getComputedStyle(markdownInput).lineHeight, 10);
+        const paddingTop = parseInt(window.getComputedStyle(markdownInput).paddingTop, 10);
+        const paddingBottom = parseInt(window.getComputedStyle(markdownInput).paddingBottom, 10);
+        const contentHeight = markdownInput.scrollHeight - paddingTop - paddingBottom;
+        
+        const autoWrapLines = Math.ceil(contentHeight / lineHeight);
+        const newlineLines = markdownInput.innerText.split('\n').length;
+        
+        const totalLines = Math.max(autoWrapLines, newlineLines);
+        lineNumbers.innerHTML = Array.from({length: totalLines}, (_, i) => `<div>${i + 1}</div>`).join('');
     }
 
     // 同步滚动
