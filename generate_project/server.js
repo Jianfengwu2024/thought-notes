@@ -167,7 +167,7 @@ app.post('/generate', (req, res) => {
     console.error('生成项目失败:', error);
     res.status(500).json({
       success: false,
-      message: '生成项目失败：' + error.message
+  message: '生成项目失败：' + error.message
     });
   }
 });
