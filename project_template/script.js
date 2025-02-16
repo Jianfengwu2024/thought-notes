@@ -140,6 +140,29 @@ function debounce(func, wait) {
   };
 }
 
+// 自动保存和恢复功能
+function initAutoSave() {
+  const markdownInput = document.getElementById('markdown-input');
+  if (!markdownInput) return;
+
+  // 从localStorage恢复内容
+  const savedContent = localStorage.getItem('markdownContent');
+  if (savedContent) {
+    markdownInput.innerText = savedContent;
+    renderMarkdown();
+  }
+
+  // 页面关闭时保存内容
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem('markdownContent', markdownInput.innerText);
+  });
+
+  // 定期保存（每5秒）
+  setInterval(() => {
+    localStorage.setItem('markdownContent', markdownInput.innerText);
+  }, 5000);
+}
+
 // Function to render visible markdown content
 function renderVisibleMarkdown() {
   const markdownInput = document.getElementById('markdown-input');
@@ -259,6 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 确保元素可见
   markdownInput.style.display = 'block';
+  
+  // 初始化自动保存功能
+  initAutoSave();
   htmlOutput.style.display = 'block';
 
   // 初始渲染
@@ -312,7 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelUploadBtn.addEventListener('click', () => {
         uploadDialog.style.display = 'none'; // 隐藏对话框
     });
-
 
 
     if (!markdownInput || !htmlOutput) {
@@ -400,24 +425,16 @@ document.addEventListener('DOMContentLoaded', () => {
         item.dataset.id = `category-${index}`;
     });
     
+    // 实时Markdown解析和自动保存
+    let lastRenderedContent = '';
+    let isRendering = false;
 
-// 实时Markdown解析和自动保存
-let lastRenderedContent = '';
-let isRendering = false;
-
-// 防抖处理
-let renderTimeout;
-markdownInput.addEventListener('input', () => {
-    clearTimeout(renderTimeout);
-    renderTimeout = setTimeout(renderMarkdown, 300);
-});
-
-// 定期保存（每5秒）
-setInterval(() => {
-    if (markdownInput.innerText && markdownInput.innerText !== lastRenderedContent) {
-        renderMarkdown();
-    }
-}, 600000);
+    // 防抖处理
+    let renderTimeout;
+    markdownInput.addEventListener('input', () => {
+        clearTimeout(renderTimeout);
+        renderTimeout = setTimeout(renderMarkdown, 300);
+    });
 
     // 获取对话框相关元素
     const dialog = document.getElementById('category-dialog');
@@ -487,138 +504,138 @@ setInterval(() => {
 
         // 添加分块压缩支持
         const compressInChunks = (text, chunkSize = 1024 * 1024) => {
-            const chunks = [];
-            for (let i = 0; i < text.length; i += chunkSize) {
-                chunks.push(LZString.compressToUTF16(text.slice(i, i + chunkSize)));
-            }
-            return chunks;
-        };
+          const chunks = [];
+          for (let i = 0; i < text.length; i += chunkSize) {
+              chunks.push(LZString.compressToUTF16(text.slice(i, i + chunkSize)));
+          }
+          return chunks;
+      };
 
-        // 显示对话框并初始化分类选项
-        dialog.style.display = 'block';
-        populateCategories();
-    });
+      // 显示对话框并初始化分类选项
+      dialog.style.display = 'block';
+      populateCategories();
+  });
 
-    // 取消保存
-    cancelSaveBtn.addEventListener('click', () => {
-        dialog.style.display = 'none';
-    });
+  // 取消保存
+  cancelSaveBtn.addEventListener('click', () => {
+      dialog.style.display = 'none';
+  });
 
-    // 确认保存
-    confirmSaveBtn.addEventListener('click', async () => {
-        const category = mainCategorySelect.value;
-        const subcategory = subCategorySelect.value;
+  // 确认保存
+  confirmSaveBtn.addEventListener('click', async () => {
+      const category = mainCategorySelect.value;
+      const subcategory = subCategorySelect.value;
 
-        // 提取Markdown标题
-        const titleMatch = markdownInput.innerText.match(/^#\s+(.+)/m);
-        const title = titleMatch ? 
-            titleMatch[1].trim(): 
-            '未命名笔记';
+      // 提取Markdown标题
+      const titleMatch = markdownInput.innerText.match(/^#\s+(.+)/m);
+      const title = titleMatch ? 
+          titleMatch[1].trim(): 
+          '未命名笔记';
 
-        // 隐藏对话框
-        dialog.style.display = 'none';
+      // 隐藏对话框
+      dialog.style.display = 'none';
 
-        try {
-            // 检查是否是编辑模式
-            const isEditMode = localStorage.getItem('editMode') === 'true';
-            const noteId = localStorage.getItem('editNoteId');
-            const endpoint = isEditMode ? 'http://localhost:3000/api/update' : 'http://localhost:3000/api/save';
+      try {
+          // 检查是否是编辑模式
+          const isEditMode = localStorage.getItem('editMode') === 'true';
+          const noteId = localStorage.getItem('editNoteId');
+          const endpoint = isEditMode ? 'http://localhost:3000/api/update' : 'http://localhost:3000/api/save';
 
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    compressed: true,
-                    id: noteId,
-                    category,
-                    subcategory,
-                    title,
-                    content: htmlOutput.innerHTML,
-                    markdownContent: markdownInput.innerText || '',
-                    savePath: `${category}/${subcategory}`,
-                    isEdit: isEditMode
-                })
-            });
+          const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'Accept': 'application/json',
+              },
+              body: JSON.stringify({
+                  compressed: true,
+                  id: noteId,
+                  category,
+                  subcategory,
+                  title,
+                  content: htmlOutput.innerHTML,
+                  markdownContent: markdownInput.innerText || '',
+                  savePath: `${category}/${subcategory}`,
+                  isEdit: isEditMode
+              })
+          });
 
-            const result = await response.json();
-            if (result.success) {
-                // 显示保存成功提示
-                const toast = document.createElement('div');
-                toast.textContent = result.message;
-                toast.style.position = 'fixed';
-                toast.style.bottom = '20px';
-                toast.style.left = '50%';
-                toast.style.transform = 'translateX(-50%)';
-                toast.style.backgroundColor = '#4caf50';
-                toast.style.color = 'white';
-                toast.style.padding = '12px 24px';
-                toast.style.borderRadius = '25px';
-                toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-                toast.style.zIndex = '1000';
-                toast.style.animation = 'fadeInOut 3s ease-in-out';
-                
-                document.body.appendChild(toast);
-                
-                // 通过API刷新笔记列表
-                const targetCategory = document.querySelector(`a[href*="${category}/${subcategory}/contents.html"]`);
-                if (targetCategory) {
-                    // 使用fetch重新获取最新数据
-                    const refreshNotes = async () => {
-                        try {
-                            const response = await fetch(targetCategory.href);
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(await response.text(), 'text/html');
-                            const noteList = doc.getElementById('note-list');
-                            
-                // 更新当前页面的笔记列表
-                const localNoteList = document.getElementById('note-list');
-                if (localNoteList) {
-                    // 清理多余的闭合标签
-                    const cleanedHTML = noteList.innerHTML;
-                    localNoteList.innerHTML = cleanedHTML;
-                    document.dispatchEvent(new Event('contentUpdated'));
-                }
-                        } catch (error) {
-                            console.error('刷新笔记列表失败:', error);
-                        }
-                    };
-                    
-                    // 立即刷新并设置定时器保持同步
-                    refreshNotes();
-                    setTimeout(refreshNotes, 3000);
-                }
+          const result = await response.json();
+          if (result.success) {
+              // 显示保存成功提示
+              const toast = document.createElement('div');
+              toast.textContent = result.message;
+              toast.style.position = 'fixed';
+              toast.style.bottom = '20px';
+              toast.style.left = '50%';
+              toast.style.transform = 'translateX(-50%)';
+              toast.style.backgroundColor = '#4caf50';
+              toast.style.color = 'white';
+              toast.style.padding = '12px 24px';
+              toast.style.borderRadius = '25px';
+              toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+              toast.style.zIndex = '1000';
+              toast.style.animation = 'fadeInOut 3s ease-in-out';
+              
+              document.body.appendChild(toast);
+              
+              // 通过API刷新笔记列表
+              const targetCategory = document.querySelector(`a[href*="${category}/${subcategory}/contents.html"]`);
+              if (targetCategory) {
+                  // 使用fetch重新获取最新数据
+                  const refreshNotes = async () => {
+                      try {
+                          const response = await fetch(targetCategory.href);
+                          const parser = new DOMParser();
+                          const doc = parser.parseFromString(await response.text(), 'text/html');
+                          const noteList = doc.getElementById('note-list');
+                          
+              // 更新当前页面的笔记列表
+              const localNoteList = document.getElementById('note-list');
+              if (localNoteList) {
+                  // 清理多余的闭合标签
+                  const cleanedHTML = noteList.innerHTML;
+                  localNoteList.innerHTML = cleanedHTML;
+                  document.dispatchEvent(new Event('contentUpdated'));
+              }
+                      } catch (error) {
+                          console.error('刷新笔记列表失败:', error);
+                      }
+                  };
+                  
+                  // 立即刷新并设置定时器保持同步
+                  refreshNotes();
+                  setTimeout(refreshNotes, 3000);
+              }
 
-                // 3秒后移除提示
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            } else {
-                throw new Error(result.message);
-            }
-        } catch (error) {
-            const toast = document.createElement('div');
-            toast.textContent = '保存失败：' + error.message;
-            toast.style.position = 'fixed';
-            toast.style.bottom = '20px';
-            toast.style.left = '50%';
-            toast.style.transform = 'translateX(-50%)';
-            toast.style.backgroundColor = '#f44336';
-            toast.style.color = 'white';
-            toast.style.padding = '12px 24px';
-            toast.style.borderRadius = '25px';
-            toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-            toast.style.zIndex = '1000';
-            toast.style.animation = 'fadeInOut 3s ease-in-out';
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-    });
+              // 3秒后移除提示
+              setTimeout(() => {
+                  toast.remove();
+              }, 3000);
+          } else {
+              throw new Error(result.message);
+          }
+      } catch (error) {
+          const toast = document.createElement('div');
+          toast.textContent = '保存失败：' + error.message;
+          toast.style.position = 'fixed';
+          toast.style.bottom = '20px';
+          toast.style.left = '50%';
+          toast.style.transform = 'translateX(-50%)';
+          toast.style.backgroundColor = '#f44336';
+          toast.style.color = 'white';
+          toast.style.padding = '12px 24px';
+          toast.style.borderRadius = '25px';
+          toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+          toast.style.zIndex = '1000';
+          toast.style.animation = 'fadeInOut 3s ease-in-out';
+          
+          document.body.appendChild(toast);
+          
+          setTimeout(() => {
+              toast.remove();
+          }, 3000);
+      }
+  });
 
 });
