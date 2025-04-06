@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="dynamic-title"></title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="build/main.bundle.js" as="script">
+    <link rel="stylesheet" href="build/styles.bundle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -13,7 +14,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
     <link href="https://fonts.font.im/css?family=Lora|PT+Serif" rel="stylesheet">
-  <script src="script.js" defer></script>
+  <script src="build/main.bundle.js" defer></script>
   <script src="advanced_script.js" defer></script>
     <script>
         // 在浏览器环境中提供fs模块的polyfill

@@ -34,7 +34,7 @@ def check_and_install_dependencies():
     for package, version in dependencies.items():
         try:
             # Check if the package is installed
-            output = subprocess.check_output(['npm', 'list', package], cwd=script_directory, shell=True, text=True)
+            output = subprocess.check_output(['npm', 'list', package], cwd=script_directory, shell=True, text=True, encoding='utf-8', errors='ignore')
             if '(empty)' in output:
                 raise subprocess.CalledProcessError(0, f'npm list {package}', output)
         except subprocess.CalledProcessError:

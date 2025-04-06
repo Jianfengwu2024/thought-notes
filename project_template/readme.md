@@ -112,12 +112,11 @@ entity "笔记" {
     }
   ]
 }
-```
 
 # 流程图 
 
 script.js的流程图
-```plantuml
+
 @startuml
 
 start
@@ -170,9 +169,8 @@ end note
 stop
 
 @enduml
-```
+
 ## Server.js 流程图
-```plantuml
 @startuml
 
 start
@@ -229,11 +227,8 @@ end note
 stop
 
 @enduml
-```
 
 ## notes/subscript.js 流程图
-
-```plantuml
 @startuml
 
 start
@@ -280,15 +275,12 @@ end note
 stop
 
 @enduml
-```
 
 # 结构图
 
 ## index.html 结构图
-
-```plantuml
 @startuml
-left to right direction
+
 package "index.html" {
     node "HTML Document" {
         [DOCTYPE html]
@@ -309,11 +301,12 @@ package "index.html" {
         [script src="lz-string.min.js"]
         [script src="script.js" defer]
         [script src="advanced_script.js" defer]
+        [script] "fs polyfill"
     }
 
     node "Body" {
         node "Header" {
-            [h1 id="main-title]
+            [h1 id="main-title"]
             node "Toolbar" {
                 [button id="upload-note-btn"]
                 node "Upload Dialog" {
@@ -342,14 +335,11 @@ package "index.html" {
     }
 }
 
-
 @enduml
-```
-## notes/分类/子分类/contents.html 结构图
 
-```plantuml
+## notes/分类/子分类/contents.html 结构图
 @startuml
-left to right direction
+
 package "contents_template.html" {
     node "HTML Document" {
         [DOCTYPE html]
@@ -367,7 +357,7 @@ package "contents_template.html" {
         [script defer src="katex.min.js"]
         [script src="../../../script.js" defer]
         [script src="../../subscript.js" defer]
-        [script src= "fs polyfill and WebSocket"]
+        [script] "fs polyfill and WebSocket"
     }
 
     node "Body" {
@@ -399,4 +389,4 @@ package "contents_template.html" {
 }
 
 @enduml
-```
+
