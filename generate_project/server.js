@@ -85,7 +85,8 @@ app.post('/generate', (req, res) => {
       'package-lock.json',
       'check_env_and_start.py',
       'advanced_script.js',
-      'handle_images.js'
+      'handle_images.js',
+      'webpack.config.js'
     ];
     copyFiles(path.join(__dirname, '../project_template'), projectPath, mainFiles);
 
@@ -104,6 +105,11 @@ app.post('/generate', (req, res) => {
     const notesPath = path.join(projectPath, 'notes');
     const notesFiles = ['subscript.js', 'style1.css', 'contents_template.html'];
     copyFiles(path.join(__dirname, '../project_template/notes'), notesPath, notesFiles);
+
+    // 创建build目录并复制文件
+    const buildPath = path.join(projectPath, 'build');
+    const buildFiles = ['main.bundle.js', 'styles.bundle.css', 'styles.bundle.js'];
+    copyFiles(path.join(__dirname, '../project_template/build'), buildPath, buildFiles);
 
     // 创建images目录
     const imgPath = path.join(projectPath, 'images');
