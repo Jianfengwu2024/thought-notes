@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="dynamic-title"></title>
+    <link rel="preload" href="build/main.bundle.js" as="script">
+    <link rel="stylesheet" href="build/styles.bundle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/markdown/markdown.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+    <link href="https://fonts.font.im/css?family=Lora|PT+Serif" rel="stylesheet">
+  <script src="build/main.bundle.js" defer></script>
+  <script src="advanced_script.js" defer></script>
+    <script>
+        // 在浏览器环境中提供fs模块的polyfill
+        window.fs = {
+            existsSync: () => false,
+            mkdirSync: () => {},
+            writeFileSync: () => {}
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1 id="main-title"></h1>
+        <div class="toolbar">
+        <!-- 上传笔记按钮 -->
+        <button id="upload-note-btn">上传笔记</button>
+
+        <!-- 自定义文件选择对话框 -->
+        <div id="upload-dialog" class="dialog">
+            <div class="dialog-content">
+                <h3>选择.md文件</h3>
+                <input type="file" id="file-input" accept=".md" />
+                <button id="confirm-upload" disabled>确定上传</button>
+                <button id="cancel-upload" disabled>取消</button>
+            </div>
+        </div>
+        <button id="save-publish-btn">保存并发布</button>
+        <!-- 分类选择对话框 -->
+        <div id="category-dialog" class="dialog">
+            <div class="dialog-content">
+                <h3>选择分类</h3>
+                <div class="category-select">
+                    <label>主分类：
+                        <select id="main-category">
+                            <option value="未分类">未分类</option>
+                        </select>
+                    </label>
+                    <label>子分类：
+                        <select id="sub-category">
+                            <option value="未分类">未分类</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="dialog-buttons">
+                    <button id="confirm-save">确认保存</button>
+                    <button id="cancel-save">取消</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+    <div class="container">
+<nav id="sidebar"></nav>
+<script>
+    // 动态加载导航栏
+    fetch('site_data.json')
+        .then(response => response.json())
+        .then(data => {
+            // 设置标题
+            document.getElementById('dynamic-title').textContent = data.title;
+            document.getElementById('main-title').textContent = data.title;
+
+            // 生成导航栏
+            const sidebar = document.getElementById('sidebar');
+            data.categories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'category-title';
+                categoryTitle.textContent = category.name;
+                categoryDiv.appendChild(categoryTitle);
+
+                category.subcategories.forEach(subcategory => {
+                    const subcategoryDiv = document.createElement('div');
+                    subcategoryDiv.className = 'subcategory';
+                    
+                    const link = document.createElement('a');
+                    link.href = `notes/${category.name}/${subcategory.name}/contents.html`;
+                    link.textContent = subcategory.name;
+                    subcategoryDiv.appendChild(link);
+                    
+                    categoryDiv.appendChild(subcategoryDiv);
+                });
+
+                sidebar.appendChild(categoryDiv);
+            });
+        })
+        .catch(error => console.error('Error loading site data:', error));
+</script>
+        <div class="markdown-container">
+            <div class="line-numbers"></div>
+            <div id="markdown-input" class="markdown-input" contenteditable="true" spellcheck="false">
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // 初始化示例内容
+                const initialContent = `
+# 欢迎使用我的科学笔记
+
+## 这是一个Markdown编辑器
+
+- 支持**加粗**、*斜体*、==高亮==等格式
+- 支持代码块：
+\`\`\`javascript
+function hello() {
+    console.log('Hello World!');
+}
+\`\`\`
+- 支持数学公式：
+  行内公式：$E = mc^2$
+  段落公式：
+  $$
+  \\int_a^b f(x)dx = F(b) - F(a)
+  $$
+  
+  矩阵示例：
+  $$
+  \\begin{pmatrix}
+  1 & 2 \\\\
+  3 & 4
+  \\end{pmatrix}
+  $$
+
+  多行对齐示例：
+  $$
+  \\begin{align}
+  a &= b+c \\\\
+  & = d-e
+  \\end{align}
+  $$
+
+  查看 tilde 符号 $\\tilde{a}$ 的支持
+
+  不带编号的多行对齐示例：
+  $$
+  \\begin{align*}
+  a &= b+c \\\\
+  & = d-e
+  \\end{align*}
+  $$
+`;
+
+            // 强制设置初始内容
+            const markdownInput = document.getElementById('markdown-input');
+            const htmlOutput = document.getElementById('html-output');
+            
+            markdownInput.innerText = initialContent;
+            // 替换\tilde{}为\widetilde{}
+            const processedText = markdownInput.innerText.replace(/\\tilde\{([^}]*)\}/g, '\\widetilde{$1}');
+            // 解析Markdown并渲染公式
+            const html = marked.parse(processedText);
+            htmlOutput.innerHTML = html;
+            
+            // 确保元素可见
+            markdownInput.style.display = 'block';
+            htmlOutput.style.display = 'block';
+            });
+        </script>
+        <div class="html-container">
+            <div id="html-output"></div>
+        </div>
+    </div>
+</body>
+</html>
