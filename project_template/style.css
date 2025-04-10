@@ -1,0 +1,538 @@
+:root {
+    --nav-width: 20%;
+    --gap: 10px;
+    --editor-width: 50%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
+                 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+}
+
+#html-output {
+    font-family: inherit;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    font-weight: 500;
+}
+
+#markdown-input {
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Improve code block readability */
+pre, code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 14px;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 笔记项样式 */
+.note-item {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.note-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.note-title {
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.note-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.note-actions button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.note-actions .edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.note-actions .edit-btn:hover {
+    background-color: #45a049;
+}
+
+.note-actions .delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.note-actions .delete-btn:hover {
+    background-color: #da190b;
+}
+
+/* 其他样式保持不变 */
+header h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #ffffff, #e0f7fa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                     0 0 20px rgba(255, 255, 255, 0.6),
+                     0 0 30px rgba(255, 255, 255, 0.4);
+    }
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+}
+
+#save-publish-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#save-publish-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#save-publish-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+#save-publish-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 70%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+}
+
+#save-publish-btn:active::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    transition: transform 0s, opacity 0.5s;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+#sidebar {
+    width: var(--nav-width);
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+    resize: horizontal;
+    overflow: auto;
+    min-width: 150px;
+    max-width: 40%;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.markdown-input {
+    width: var(--editor-width);
+    padding: 15px;
+    border: none;
+    border-right: 1px solid #ddd;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    outline: none;
+    caret-color: #2e7d32;
+}
+
+/* Math expression styling */
+.markdown-input [data-md-type="math-inline"],
+#html-output [data-md-type="math-inline"] {
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'KaTeX_Math', 'Times New Roman', serif;
+}
+
+.markdown-input [data-md-type="math-block"], 
+#html-output [data-md-type="math-block"] {
+    color: #1565c0;
+    background-color: #e3f2fd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'KaTeX_Main', 'Times New Roman', serif;
+}
+
+.markdown-input [data-md-type="math-tag"],
+#html-output [data-md-type="math-tag"] {
+    color: #2e7d32;
+    font-weight: bold;
+    background-color: #e8f5e9;
+    padding: 1px 3px;
+    border-radius: 2px;
+}
+
+.katex {
+    font-size: 1.1em;
+}
+
+.katex-display {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.katex .mord {
+    color: #1565c0;
+}
+
+.katex .mrel {
+    color: #d32f2f;
+}
+
+.katex .mopen, .katex .mclose {
+    color: #2e7d32;
+}
+
+.katex .mfrac {
+    background-color: #fff3e0;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.markdown-input:focus {
+    background-color: #e0f2f1;
+}
+
+.markdown-input::selection {
+    background: #c8e6c9;
+}
+
+/* Markdown syntax highlighting */
+.markdown-input [data-md-type="header"] {
+    color: #1565c0;
+    font-weight: bold;
+}
+
+.markdown-input [data-md-type="code"] {
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.markdown-input [data-md-type="list"] {
+    color: #2e7d32;
+}
+
+.markdown-input [data-md-type="emphasis"] {
+    color: #ff9800;
+}
+
+.markdown-input [data-md-type="strong"] {
+    color: #d84315;
+    font-weight: bold;
+}
+
+#html-output {
+    width: calc(100% - var(--editor-width));
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #faf3e0;
+    color: #5c4b36;
+    line-height: 1.6;
+}
+
+.katex {
+    color: blue;
+}
+
+.katex-display {
+    color: blue;
+}
+
+pre {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+code {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+#sidebar {
+    padding: 15px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.category-title {
+    font-weight: 600;
+    margin: 15px 0 8px 0;
+    cursor: pointer;
+    color: #2c3e50;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #ffffff, #f0f2f5);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+#sidebar {
+    background: #f5f7fa;
+    border-right: 1px solid #e3e8ee;
+}
+
+.category {
+    margin-bottom: 24px;
+    padding: 0;
+}
+
+.category-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #ffffff;
+    padding: 16px 20px;
+    margin: 0;
+    background: #2d3748;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subcategory {
+    padding: 8px 16px;
+    margin: 0;
+    color: #4a5568;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.subcategory a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 4px 0;
+}
+
+.subcategory:hover {
+    background: #ebf0f5;
+    border-left-color: #4fd1c5;
+    color: #2d3748;
+}
+
+.subcategory.active {
+    background: #e6f5f4;
+    border-left-color: #38b2ac;
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.category-title:hover {
+    background: #ebf0f5;
+    color: #2d3748;
+}
+
+.subcategory.active {
+    background: linear-gradient(145deg, #4fd1c5, #38b2ac);
+    color: white;
+    font-weight: 500;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    90% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+}
+
+/* 对话框样式 */
+.dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.dialog-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: 400px;
+}
+
+.dialog h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.category-select {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.category-select label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+.category-select select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dialog-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#confirm-save {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#cancel-save {
+    background-color: #f44336;
+    color: white;
+}
+
+/* 高亮文本样式 */
+mark {
+    background-color: #ffeb3b;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25em;
+    color: #000;
+}

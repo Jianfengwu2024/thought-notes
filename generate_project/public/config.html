@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目配置</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>项目配置</h1>
+    
+    <div class="form-group">
+      <h2>项目标题</h2>
+      <input type="text" id="title" placeholder="请输入项目标题" required>
+    </div>
+
+    <div class="category-management">
+      <h2>分类管理</h2>
+      <button type="button" class="btn" onclick="addCategory()">添加分类</button>
+      
+      <div id="categories">
+        <!-- 动态添加的分类项将显示在这里 -->
+      </div>
+    </div>
+
+    <button class="btn generate-btn" onclick="generateProject()">生成项目</button>
+  </div>
+
+  <script>
+    // 确保所有DOM元素加载完成后再初始化默认分类
+    function initializeDefaultCategories() {
+      try {
+        console.log('开始初始化默认分类');
+        const categoriesDiv = document.getElementById('categories');
+        if (!categoriesDiv) {
+          throw new Error('无法找到分类容器元素');
+        }
+
+        // 清空现有分类
+        categoriesDiv.innerHTML = '';
+        
+        // 创建分类数组
+        const categories = [];
+        for (let i = 1; i <= 4; i++) {
+          // 添加分类
+          addCategory();
+          
+          // 获取最新添加的分类
+          const category = categoriesDiv.lastElementChild;
+          if (!category) {
+            throw new Error(`添加第${i}个分类失败`);
+          }
+          categories.push(category);
+          
+          // 设置分类名称
+          const categoryInput = category.querySelector('input');
+          if (!categoryInput) {
+            throw new Error(`无法找到第${i}个分类的输入框`);
+          }
+          categoryInput.value = `默认分类${i}`;
+          console.log(`成功添加默认分类${i}`);
+          
+          // 添加子分类
+          for (let j = 1; j <= 4; j++) {
+            addSubCategory(category);
+            
+            // 获取最新添加的子分类输入框
+            const subInputs = category.querySelectorAll('.subcategory-item input');
+            if (!subInputs || subInputs.length === 0) {
+              throw new Error(`无法找到子分类输入框`);
+            }
+            subInputs[subInputs.length - 1].value = `默认子分类${j}`;
+            console.log(`成功在分类${i}下添加默认子分类${j}`);
+          }
+        }
+        console.log('默认分类初始化完成');
+      } catch (error) {
+        console.error('初始化默认分类时发生错误:', error);
+        alert('初始化默认分类失败，请检查控制台日志');
+      }
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 等待所有资源加载完成
+      window.addEventListener('load', function() {
+        // 添加1秒延迟确保所有元素完全渲染
+        setTimeout(() => {
+          const categoriesDiv = document.getElementById('categories');
+          if (!categoriesDiv) {
+            console.error('分类容器元素未找到');
+            return;
+          }
+          
+          // 检查样式是否已加载
+          const computedStyle = window.getComputedStyle(categoriesDiv);
+          if (computedStyle.display === 'none') {
+            console.error('分类容器被隐藏');
+            categoriesDiv.style.display = 'block';
+          }
+          
+          try {
+            initializeDefaultCategories();
+          } catch (error) {
+            console.error('初始化默认分类失败:', error);
+            alert('初始化分类时出错，请检查控制台');
+          }
+        }, 1000);
+      });
+    });
+
+    function addCategory() {
+      const container = document.createElement('div');
+      container.className = 'category-item';
+      
+      const categoryHeader = document.createElement('div');
+      categoryHeader.className = 'category-header';
+      
+      const categoryInput = document.createElement('input');
+      categoryInput.type = 'text';
+      categoryInput.placeholder = '分类名称';
+      categoryInput.className = 'form-control';
+      
+      const deleteCategoryBtn = document.createElement('button');
+      deleteCategoryBtn.className = 'btn delete-btn';
+      deleteCategoryBtn.textContent = '删除分类';
+      deleteCategoryBtn.onclick = () => container.remove();
+      
+      const addSubBtn = document.createElement('button');
+      addSubBtn.className = 'btn add-subcategory-btn';
+      addSubBtn.textContent = '添加子分类';
+      addSubBtn.onclick = () => addSubCategory(container);
+      
+      categoryHeader.appendChild(categoryInput);
+      categoryHeader.appendChild(deleteCategoryBtn);
+      
+      const subcategoryList = document.createElement('div');
+      subcategoryList.className = 'subcategory-list';
+      
+      container.appendChild(categoryHeader);
+      container.appendChild(addSubBtn);
+      container.appendChild(subcategoryList);
+      
+      document.getElementById('categories').appendChild(container);
+    }
+
+    function addSubCategory(container) {
+      const subcategoryList = container.querySelector('.subcategory-list');
+      
+      const subcategoryItem = document.createElement('div');
+      subcategoryItem.className = 'subcategory-item';
+      
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = '子分类名称';
+      input.className = 'form-control';
+      
+      const deleteSubBtn = document.createElement('button');
+      deleteSubBtn.className = 'btn delete-btn';
+      deleteSubBtn.textContent = '删除';
+      deleteSubBtn.onclick = () => subcategoryItem.remove();
+      
+      subcategoryItem.appendChild(input);
+      subcategoryItem.appendChild(deleteSubBtn);
+      subcategoryList.appendChild(subcategoryItem);
+    }
+
+    function generateProject() {
+      const title = document.getElementById('title').value;
+      const categories = [];
+      
+      document.querySelectorAll('.category-item').forEach(cat => {
+        const category = {
+          name: cat.querySelector('input').value,
+          subcategories: []
+        };
+        
+        cat.querySelectorAll('.subcategory-item input').forEach(input => {
+          category.subcategories.push({ name: input.value });
+        });
+        
+        categories.push(category);
+      });
+
+      fetch('/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          categories
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('项目生成成功！');
+        } else {
+          alert('项目生成失败：' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('请求失败');
+      });
+    }
+  </script>
+</body>
+</html>
